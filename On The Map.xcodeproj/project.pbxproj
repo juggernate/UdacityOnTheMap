@@ -13,6 +13,7 @@
 		D8B856CE1AC98FBA00DB03C3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8B856CD1AC98FBA00DB03C3 /* Images.xcassets */; };
 		D8B856D11AC98FBA00DB03C3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8B856CF1AC98FBA00DB03C3 /* LaunchScreen.xib */; };
 		D8B856DD1AC98FBA00DB03C3 /* On_The_MapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B856DC1AC98FBA00DB03C3 /* On_The_MapTests.swift */; };
+		D8F2C9311ACA1F6000B11B20 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		D8B856D61AC98FBA00DB03C3 /* On The MapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "On The MapTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8B856DB1AC98FBA00DB03C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8B856DC1AC98FBA00DB03C3 /* On_The_MapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = On_The_MapTests.swift; sourceTree = "<group>"; };
+		D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				D8B856C61AC98FBA00DB03C3 /* AppDelegate.swift */,
 				D8B856C81AC98FBA00DB03C3 /* ViewController.swift */,
 				D8B856CA1AC98FBA00DB03C3 /* Main.storyboard */,
+				D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */,
 				D8B856CD1AC98FBA00DB03C3 /* Images.xcassets */,
 				D8B856CF1AC98FBA00DB03C3 /* LaunchScreen.xib */,
 				D8B856C41AC98FBA00DB03C3 /* Supporting Files */,
@@ -213,6 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8B856C91AC98FBA00DB03C3 /* ViewController.swift in Sources */,
+				D8F2C9311ACA1F6000B11B20 /* MapViewController.swift in Sources */,
 				D8B856C71AC98FBA00DB03C3 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -407,6 +411,7 @@
 				D8B856E21AC98FBA00DB03C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D8B856E31AC98FBA00DB03C3 /* Build configuration list for PBXNativeTarget "On The MapTests" */ = {
 			isa = XCConfigurationList;
@@ -415,6 +420,7 @@
 				D8B856E51AC98FBA00DB03C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
