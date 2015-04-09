@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B576715ED0A5D61B92008F84 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE3C73ABA9DCA3D7EDA49D36 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		D8A922061AD5FB6100A19213 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A922051AD5FB6100A19213 /* LoginViewController.swift */; };
+		D8B7A0D91AD625FB00AF53C7 /* UdacityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B7A0D81AD625FB00AF53C7 /* UdacityClient.swift */; };
 		D8B856C71AC98FBA00DB03C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B856C61AC98FBA00DB03C3 /* AppDelegate.swift */; };
 		D8B856C91AC98FBA00DB03C3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B856C81AC98FBA00DB03C3 /* ViewController.swift */; };
 		D8B856CC1AC98FBA00DB03C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8B856CA1AC98FBA00DB03C3 /* Main.storyboard */; };
@@ -30,6 +32,8 @@
 /* Begin PBXFileReference section */
 		C00FDF9571EDAE7BF24AAB2D /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		CBFD279BB2E471424A5FCE4F /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		D8A922051AD5FB6100A19213 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		D8B7A0D81AD625FB00AF53C7 /* UdacityClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityClient.swift; sourceTree = "<group>"; };
 		D8B856C11AC98FBA00DB03C3 /* On The Map.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "On The Map.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8B856C51AC98FBA00DB03C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8B856C61AC98FBA00DB03C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -80,6 +84,24 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		D8A922041AD5F58F00A19213 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				D8A922051AD5FB6100A19213 /* LoginViewController.swift */,
+				D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */,
+				D8B856C81AC98FBA00DB03C3 /* ViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		D8A922071AD6249700A19213 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				D8B7A0D81AD625FB00AF53C7 /* UdacityClient.swift */,
+			);
+			name = Clients;
+			sourceTree = "<group>";
+		};
 		D8B856B81AC98FBA00DB03C3 = {
 			isa = PBXGroup;
 			children = (
@@ -103,12 +125,9 @@
 		D8B856C31AC98FBA00DB03C3 /* On The Map */ = {
 			isa = PBXGroup;
 			children = (
-				D8B856C61AC98FBA00DB03C3 /* AppDelegate.swift */,
-				D8B856C81AC98FBA00DB03C3 /* ViewController.swift */,
+				D8A922071AD6249700A19213 /* Clients */,
+				D8A922041AD5F58F00A19213 /* Controllers */,
 				D8B856CA1AC98FBA00DB03C3 /* Main.storyboard */,
-				D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */,
-				D8B856CD1AC98FBA00DB03C3 /* Images.xcassets */,
-				D8B856CF1AC98FBA00DB03C3 /* LaunchScreen.xib */,
 				D8B856C41AC98FBA00DB03C3 /* Supporting Files */,
 			);
 			path = "On The Map";
@@ -117,6 +136,9 @@
 		D8B856C41AC98FBA00DB03C3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D8B856CD1AC98FBA00DB03C3 /* Images.xcassets */,
+				D8B856CF1AC98FBA00DB03C3 /* LaunchScreen.xib */,
+				D8B856C61AC98FBA00DB03C3 /* AppDelegate.swift */,
 				D8B856C51AC98FBA00DB03C3 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -290,6 +312,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8B7A0D91AD625FB00AF53C7 /* UdacityClient.swift in Sources */,
+				D8A922061AD5FB6100A19213 /* LoginViewController.swift in Sources */,
 				D8B856C91AC98FBA00DB03C3 /* ViewController.swift in Sources */,
 				D8F2C9311ACA1F6000B11B20 /* MapViewController.swift in Sources */,
 				D8B856C71AC98FBA00DB03C3 /* AppDelegate.swift in Sources */,
