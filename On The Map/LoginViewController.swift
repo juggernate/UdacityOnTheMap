@@ -12,8 +12,6 @@ import SwiftyJSON
 
 class LoginViewController: UIViewController {
 
-//    @IBOutlet weak var debugTextLabel: UILabel!
-//    @IBOutlet weak var headerTextLabel: UILabel!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     @IBOutlet weak var signupButton: UIButton!
@@ -45,37 +43,99 @@ class LoginViewController: UIViewController {
     
     // MARK: - Actions
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // pass student object
+        
+    }
+    
     @IBAction func loginButtonTouch(sender: AnyObject) {
-//        TMDBClient.sharedInstance().authenticateWithViewController(self) { (success, errorString) in
-//            if success {
-//                self.completeLogin()
-//            } else {
-//                self.displayError(errorString)
-//            }
-//        }
+        
+        //Todo: check first for empty fields?
+        
+        spinner.startAnimating()
+        
         Alamofire.request(UdacityClient.Router.UdacityLogin(userField.text, passwordField.text))
             .response() { (_, _, DATA, ERROR) in
                 
-                if let error = ERROR {
-                    println("ZALAMOOOO ERROR:")
-                    println(error.localizedDescription)
-                    return
+            if let networkError = ERROR {
+                println("SHOWING ERROR:")
+                println(networkError.localizedDescription)
+                self.displayError(networkError.localizedDescription)
+                println("Did it work?")
+                return
+            }
+            
+            if let data: AnyObject = DATA{
+                //strip the first 5 from data (security thing?)
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+                let jsn = JSON(data: newData)
+                println("JSNOOOOO")
+                println(jsn)
+                
+                if let loginError = jsn["error"].string {
+                    println("Login Error:")
+                    println(loginError)
+                    //TODO: strip "trails.Error 4xx: " if it exists in message for nicer presentation
+                    let alert = UIAlertController(title: "Login Error:", message: loginError, preferredStyle: .Alert)
+//                    let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in println("Clicked OK") }
+                    alert.addAction(UIAlertAction(title: "OK", style: .Default) { action in
+                        println("Clicked OK")
+                        self.spinner.stopAnimating()
+                        })
+                    self.presentViewController(alert, animated: true) { println("Completed") }
                 }
                 
-                if let data: AnyObject = DATA{
-                    let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
-                    let jsn = JSON(data: newData)
-                    println("JSNOOOOO")
-                    println(jsn)
+                if let accountID = jsn["account"]["key"].string {
+                    println("ACCOUNT ID:")
+                    println(accountID)
                     
-                    if let sessionID = jsn["session"]["id"].string {
-                        println("SESSION ID:")
-                        println(sessionID)
+                    StudentLocation.sharedInstance.objectID = accountID
+                    
+                    Alamofire.request(UdacityClient.Router.UdacityInfo(accountID)).response() {(_, _, DATA, ERROR) in
+                        if let networkError = ERROR {
+                            println("SHOWING ERROR:")
+                            println(networkError.localizedDescription)
+                            self.displayError(networkError.localizedDescription)
+                            println("Did it work?")
+                            return
+                        }
+                        
+                        if let data: AnyObject = DATA{
+                            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+                            let jsn = JSON(data: newData)
+                            println("JSNOOOOOWWWWW")
+                            println(jsn)
+                            
+                            if let loginError = jsn["error"].string {
+                                println("GET UserInfo Error:")
+                                println(loginError)
+                                //TODO: strip "trails.Error 4xx: " if it exists in message for nicer presentation
+                                let alert = UIAlertController(title: "Login User Error:", message: loginError, preferredStyle: .Alert)
+                                //                    let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in println("Clicked OK") }
+                                alert.addAction(UIAlertAction(title: "OK", style: .Default) { action in
+                                    println("Clicked OK")
+                                    self.spinner.stopAnimating()
+                                    })
+                                self.presentViewController(alert, animated: true) { println("Completed") }
+                            }
+                            
+//                            if let 
+                            
+                            if let firstname = jsn["user"]["first_name"].string {
+                                if let lastname = jsn["user"]["last_name"].string {
+                                    println("Hello \(firstname) \(lastname)!" )
+                                    StudentLocation.sharedInstance.firstName = firstname
+                                    StudentLocation.sharedInstance.lastName = lastname
+                                    self.performSegueWithIdentifier("SignInComplete", sender: self)
+                                }
+                            }
+                            
+                        }
+                        
                     }
                 }
-                
+            }
         }
-        
     }
        
     // MARK: - LoginViewController
@@ -90,8 +150,25 @@ class LoginViewController: UIViewController {
     
     func displayError(errorString: String?) {
         dispatch_async(dispatch_get_main_queue(), {
+            
             if let errorString = errorString? {
 //                self.debugTextLabel.text = errorString
+                
+                let alertController = UIAlertController(title: "Network Error", message: errorString, preferredStyle: .Alert)
+                
+//                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+//                    // ...
+//                }
+//                alertController.addAction(cancelAction)
+                
+                let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+                    println("Clicked OK")
+                }
+                alertController.addAction(OKAction)
+                
+                self.presentViewController(alertController, animated: true) {
+                    self.spinner.stopAnimating()
+                }
             }
         })
     }

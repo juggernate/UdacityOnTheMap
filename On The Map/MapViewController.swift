@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 shondicon. All rights reserved.
 //
 
+// TODO: Move locations request/response into separate model, map and list view should pull from that single source
+
 import UIKit
 import MapKit
 
@@ -102,6 +104,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
         println("YoMoFo. Annotation Selected: \(view)")
     }
+    
+    
+    
     
     // MARK: - Sample Data
     
