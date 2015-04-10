@@ -62,7 +62,7 @@ class PostLocationViewController: UIViewController {
             
             println("Placemarks: \(placemarks.count)")
             if placemarks.count > 0 {
-                self.placemark = placemarks[0] as CLPlacemark
+                self.placemark = placemarks[0] as! CLPlacemark
                 let location = self.placemark.location
                 println(location)
                 
