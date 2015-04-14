@@ -1,9 +1,5 @@
 //
 //  LoginViewController.swift
-//  TheMovieManager
-//
-//  Created by Jarrod Parkes on 2/26/15.
-//  Copyright (c) 2015 Jarrod Parkes. All rights reserved.
 //
 
 import UIKit
@@ -146,6 +142,30 @@ class LoginViewController: UIViewController {
             let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as! UINavigationController
             self.presentViewController(controller, animated: true, completion: nil)
         })
+    }
+    
+    @IBAction func accountSignUp(sender: UIButton) {
+        
+        //TODO: webview or safari?
+        let signupURL = NSURL(string: "https://www.udacity.com/account/auth#!/signin")!
+//        UIApplication.sharedApplication().openURL(signupURL)
+        let request = NSURLRequest(URL: signupURL)
+        
+//        let authorizationURL = NSURL(string: "\(TMDBClient.Constants.AuthorizationURL)\(requestToken!)")
+//        let request = NSURLRequest(URL: authorizationURL!)
+        let webAuthViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+        webAuthViewController.urlRequest = request
+//        webAuthViewController.requestToken = requestToken
+//        webAuthViewController.completionHandler = completionHandler
+        
+        //put it in a navController so you can automatically have navBar...
+        let webAuthNavigationController = UINavigationController()
+        webAuthNavigationController.pushViewController(webAuthViewController, animated: false)
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.presentViewController(webAuthNavigationController, animated: true, completion: nil)
+        })
+        
     }
     
     func displayError(errorString: String?) {
