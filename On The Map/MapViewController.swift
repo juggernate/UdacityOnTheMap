@@ -57,6 +57,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // When the array is complete, we add the annotations to the map.
         self.mapView.addAnnotations(annotations)
         
+        StudentsManager.sharedInstance.updateStudentsList()
+        
     }
     
     // MARK: - MKMapViewDelegate

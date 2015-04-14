@@ -1,8 +1,8 @@
 //
-//  StudentLocation.swift
+//  Student.swift
 //  On The Map
 //
-//  Created by Nathan Allison on 4/10/15.
+//  Created by Nathan Allison on 4/14/15.
 //  Copyright (c) 2015 shondicon. All rights reserved.
 //
 
@@ -22,17 +22,13 @@ import Foundation
 //"lastName" : "Uelmen"
 //}
 
-class StudentLocation {
-//    var student: Student
-    static let sharedInstance = StudentLocation()
-    
+struct Student {
     var firstName = ""
     var lastName = ""
-    var objectID = ""
+    var objectID = "" //this is the studentID, same value used in Udacity API
     var uniqueKey = ""
     var latitude = 0.0
     var longitude = 0.0
     var mapString = ""
     var mediaURL = ""
-
 }
