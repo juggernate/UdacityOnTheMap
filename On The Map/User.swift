@@ -1,5 +1,5 @@
 //
-//  StudentLocation.swift
+//  User.swift
 //  On The Map
 //
 //  Created by Nathan Allison on 4/10/15.
@@ -22,17 +22,9 @@ import Foundation
 //"lastName" : "Uelmen"
 //}
 
-class StudentLocation {
+class User {
 //    var student: Student
-    static let sharedInstance = StudentLocation()
-    
-    var firstName = ""
-    var lastName = ""
-    var objectID = ""
-    var uniqueKey = ""
-    var latitude = 0.0
-    var longitude = 0.0
-    var mapString = ""
-    var mediaURL = ""
+    var info = Student()
+    static let sharedInstance = User()
 
 }

@@ -37,7 +37,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
 //        self.topConstraint.constant -= 40
         self.bottomHeight.constant = self.view.bounds.height * 0.2
         
-        whereLabel.text = "Where art thou \(StudentLocation.sharedInstance.firstName)?"
+        whereLabel.text = "Where art thou \(User.sharedInstance.info.firstName)?"
         shareLocation.enabled = false
         topLabelGrp.alpha = 0
     }
@@ -185,9 +185,9 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
                 // Create a new variable to store the instance of PlayerTableViewController
 //                let destinationVC = segue.destinationViewController as PlayerTableViewController
 //                destinationVC.programVar = newProgramVar
-                StudentLocation.sharedInstance.mapString = addressString
-                StudentLocation.sharedInstance.latitude = location.coordinate.latitude
-                StudentLocation.sharedInstance.longitude = location.coordinate.longitude
+                User.sharedInstance.info.mapString = addressString
+                User.sharedInstance.info.latitude = location.coordinate.latitude
+                User.sharedInstance.info.longitude = location.coordinate.longitude
                 
                 self.animateTopLayers()
                 
@@ -195,15 +195,15 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
                 
                 var annotations = [MKPointAnnotation]()
                 
-                let lat = CLLocationDegrees(StudentLocation.sharedInstance.latitude)
-                let long = CLLocationDegrees(StudentLocation.sharedInstance.longitude)
+                let lat = CLLocationDegrees(User.sharedInstance.info.latitude)
+                let long = CLLocationDegrees(User.sharedInstance.info.longitude)
                 
                 // The lat and long are used to create a CLLocationCoordinates2D instance.
                 let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
                 
                 var annotation = MKPointAnnotation()
                 annotation.coordinate = coordinate
-                annotation.title = "\(StudentLocation.sharedInstance.firstName) \(StudentLocation.sharedInstance.lastName)"
+                annotation.title = "\(User.sharedInstance.info.firstName) \(User.sharedInstance.info.lastName)"
 //                annotation.subtitle = mediaURL
                 
                 

@@ -34,15 +34,15 @@ class PostMapViewController: UIViewController, MKMapViewDelegate {
     
         // Notice that the float values are being used to create CLLocationDegree values.
         // This is a version of the Double type.
-        let lat = CLLocationDegrees(StudentLocation.sharedInstance.latitude)
-        let long = CLLocationDegrees(StudentLocation.sharedInstance.longitude)
+        let lat = CLLocationDegrees(User.sharedInstance.info.latitude)
+        let long = CLLocationDegrees(User.sharedInstance.info.longitude)
         
         // The lat and long are used to create a CLLocationCoordinates2D instance.
         let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
         
-        let first = StudentLocation.sharedInstance.firstName
-        let last = StudentLocation.sharedInstance.lastName
-        let mediaURL = StudentLocation.sharedInstance.mediaURL
+        let first = User.sharedInstance.info.firstName
+        let last = User.sharedInstance.info.lastName
+        let mediaURL = User.sharedInstance.info.mediaURL
         
         // Here we create the annotation and set its coordiate, title, and subtitle properties
         var annotation = MKPointAnnotation()

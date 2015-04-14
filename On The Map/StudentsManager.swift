@@ -10,19 +10,20 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-private let _SharedInstance = StudentsManager()
+//private let _SharedInstance = StudentsManager()
 
 class StudentsManager: NSObject {
     //singleton?
+    static let sharedInstance = StudentsManager()
     var students = [Student]()
     
-    class var sharedInstance: StudentsManager {
-        return _SharedInstance
-    }
+//    class var sharedInstance: StudentsManager {
+//        return _SharedInstance
+//    }
     
     func updateStudentsList(results: [JSON]) {
         println("RESULTADANANAS:")
-        println(results[0])
+        println(results.count)
         //clear existing
         self.students.removeAll(keepCapacity: true)
         
@@ -41,6 +42,10 @@ class StudentsManager: NSObject {
         Alamofire.request(UdacityClient.Router.Parse).responseJSON() {
             (a, b, DATA, ERROR) in
             
+            println(a)
+            println(b)
+            println(DATA)
+            
             if let networkError = ERROR {
                 println("SHOWING ERROR:")
                 println(networkError.localizedDescription)
@@ -51,6 +56,8 @@ class StudentsManager: NSObject {
 
             if let data: AnyObject = DATA {
                 let json = JSON(data)
+                println("Da JSON")
+                println(json)
                 if let results = json["results"].array {
                     self.updateStudentsList(results)
                 }

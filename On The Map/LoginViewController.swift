@@ -85,7 +85,7 @@ class LoginViewController: UIViewController {
                     println("ACCOUNT ID:")
                     println(accountID)
                     
-                    StudentLocation.sharedInstance.objectID = accountID
+                    User.sharedInstance.info.objectID = accountID
                     
                     Alamofire.request(UdacityClient.Router.UdacityInfo(accountID)).response() {(_, _, DATA, ERROR) in
                         if let networkError = ERROR {
@@ -120,8 +120,8 @@ class LoginViewController: UIViewController {
                             if let firstname = jsn["user"]["first_name"].string {
                                 if let lastname = jsn["user"]["last_name"].string {
                                     println("Hello \(firstname) \(lastname)!" )
-                                    StudentLocation.sharedInstance.firstName = firstname
-                                    StudentLocation.sharedInstance.lastName = lastname
+                                    User.sharedInstance.info.firstName = firstname
+                                    User.sharedInstance.info.lastName = lastname
                                     self.performSegueWithIdentifier("SignInComplete", sender: self)
                                 }
                             }
