@@ -34,19 +34,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             // Notice that the float values are being used to create CLLocationDegree values.
             // This is a version of the Double type.
-            let lat = CLLocationDegrees(dictionary["latitude"] as Double)
-            let long = CLLocationDegrees(dictionary["longitude"] as Double)
+            let lat = CLLocationDegrees(dictionary["latitude"] as! Double)
+            let long = CLLocationDegrees(dictionary["longitude"] as! Double)
             
             // The lat and long are used to create a CLLocationCoordinates2D instance.
             let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
             
-            let first = dictionary["firstName"] as String
-            let last = dictionary["lastName"] as String
-            let mediaURL = dictionary["mediaURL"] as String
+            let first = dictionary["firstName"] as! String
+            let last = dictionary["lastName"] as! String
+            let mediaURL = dictionary["mediaURL"] as! String
             
             // Here we create the annotation and set its coordiate, title, and subtitle properties
             var annotation = MKPointAnnotation()
-            annotation.setCoordinate(coordinate)
+            annotation.coordinate = coordinate
             annotation.title = "\(first) \(last)"
             annotation.subtitle = mediaURL
             
@@ -77,7 +77,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinView!.canShowCallout = true
             pinView!.pinColor = MKPinAnnotationColor.Purple
             //            pinView!.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as UIButton
-            pinView!.leftCalloutAccessoryView = UIButton.buttonWithType(UIButtonType.InfoDark) as UIButton
+            pinView!.leftCalloutAccessoryView = UIButton.buttonWithType(UIButtonType.InfoDark) as! UIButton
         }
         else {
             pinView!.annotation = annotation

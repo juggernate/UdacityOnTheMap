@@ -1,9 +1,5 @@
 //
 //  LoginViewController.swift
-//  TheMovieManager
-//
-//  Created by Jarrod Parkes on 2/26/15.
-//  Copyright (c) 2015 Jarrod Parkes. All rights reserved.
 //
 
 import UIKit
@@ -27,7 +23,7 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         spinner.stopAnimating()
         /* Get the app delegate */
-        appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
         /* Get the shared URL session */
         session = NSURLSession.sharedSession()
@@ -143,15 +139,39 @@ class LoginViewController: UIViewController {
     func completeLogin() {
         dispatch_async(dispatch_get_main_queue(), {
 //            self.debugTextLabel.text = ""
-            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as UINavigationController
+            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as! UINavigationController
             self.presentViewController(controller, animated: true, completion: nil)
         })
+    }
+    
+    @IBAction func accountSignUp(sender: UIButton) {
+        
+        //TODO: webview or safari?
+        let signupURL = NSURL(string: "https://www.udacity.com/account/auth#!/signin")!
+//        UIApplication.sharedApplication().openURL(signupURL)
+        let request = NSURLRequest(URL: signupURL)
+        
+//        let authorizationURL = NSURL(string: "\(TMDBClient.Constants.AuthorizationURL)\(requestToken!)")
+//        let request = NSURLRequest(URL: authorizationURL!)
+        let webAuthViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+        webAuthViewController.urlRequest = request
+//        webAuthViewController.requestToken = requestToken
+//        webAuthViewController.completionHandler = completionHandler
+        
+        //put it in a navController so you can automatically have navBar...
+        let webAuthNavigationController = UINavigationController()
+        webAuthNavigationController.pushViewController(webAuthViewController, animated: false)
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.presentViewController(webAuthNavigationController, animated: true, completion: nil)
+        })
+        
     }
     
     func displayError(errorString: String?) {
         dispatch_async(dispatch_get_main_queue(), {
             
-            if let errorString = errorString? {
+            if let errorString = errorString {
 //                self.debugTextLabel.text = errorString
                 
                 let alertController = UIAlertController(title: "Network Error", message: errorString, preferredStyle: .Alert)

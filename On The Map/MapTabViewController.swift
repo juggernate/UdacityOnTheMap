@@ -20,7 +20,7 @@ class MapTabViewController: UITabBarController, UITabBarControllerDelegate
         if viewController.title == "MODAL"{
             
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            let postEditorNav = storyboard.instantiateViewControllerWithIdentifier("PostEditorNav") as UINavigationController
+            let postEditorNav = storyboard.instantiateViewControllerWithIdentifier("PostEditor") as! PostLocationViewController
             self.presentViewController(postEditorNav, animated: true, completion: nil)
             
             return false
