@@ -155,6 +155,7 @@ class LoginViewController: UIViewController {
 //        let request = NSURLRequest(URL: authorizationURL!)
         let webAuthViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
         webAuthViewController.urlRequest = request
+        webAuthViewController.navTitle = "Udacity Account Sign Up"
 //        webAuthViewController.requestToken = requestToken
 //        webAuthViewController.completionHandler = completionHandler
         

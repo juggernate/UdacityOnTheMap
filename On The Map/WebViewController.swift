@@ -13,8 +13,10 @@ class WebViewController: UIViewController, UIWebViewDelegate {
     @IBOutlet weak var webView: UIWebView!
     
     var urlRequest: NSURLRequest? = nil
-    var requestToken: String? = nil
-    var completionHandler : ((success: Bool, errorString: String?) -> Void)? = nil
+    var navTitle: String? = nil
+    
+//    var requestToken: String? = nil
+//    var completionHandler : ((success: Bool, errorString: String?) -> Void)? = nil
     
     // MARK: - Lifecycle
     
@@ -23,8 +25,10 @@ class WebViewController: UIViewController, UIWebViewDelegate {
         
         webView.delegate = self
         
-        self.navigationItem.title = "TheMovieDB Auth"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: "cancelAuth")
+        if navTitle != nil {
+            self.navigationItem.title = navTitle
+        }
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: "cancel")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -35,20 +39,8 @@ class WebViewController: UIViewController, UIWebViewDelegate {
             self.webView.loadRequest(urlRequest!)
         }
     }
-    
-    // MARK: - UIWebViewDelegate
-    
-    func webViewDidFinishLoad(webView: UIWebView) {
-        
-//        if(webView.request!.URL!.absoluteString! == "\(TMDBClient.Constants.AuthorizationURL)\(requestToken!)/allow") {
-//            
-//            self.dismissViewControllerAnimated(true) {
-//                self.completionHandler!(success: true, errorString: nil)
-//            }
-//        }
-    }
-    
-    func cancelAuth() {
+
+    func cancel() {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 }
