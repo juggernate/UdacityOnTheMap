@@ -14,6 +14,9 @@ import MapKit
 class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var refreshButton: UIBarButtonItem!
+    
+    let pinImage = UIImage(named: "PinIcon")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,9 +76,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
 //            pinView!.image = UIImage(contentsOfFile: "PinIcon")
+            pinView!.image = pinImage
             pinView!.pinColor = .Purple
             pinView!.leftCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIButton//
-//            pinView!.rightCalloutAccessoryView = UIButton.buttonWithType(UIButtonType.InfoDark) as! UIButton
         }
         else {
             pinView!.annotation = annotation
@@ -84,9 +87,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         return pinView
     }
 
-//    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
-//        println("Selected: \(view.annotation.title)")
-//    }
     
     // This delegate method is implemented to respond to taps. It opens the system browser
     // to the URL specified in the annotationViews subtitle property.
@@ -95,8 +95,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         println("Control Tapped: \(control)")
         
         if control == annotationView.leftCalloutAccessoryView {
-//            let app = UIApplication.sharedApplication()
-//            app.openURL(NSURL(string: annotationView.annotation.subtitle!)!)
+
             if let urlString = annotationView.annotation.subtitle,
             url = NSURL(string: urlString) {
                 let request = NSURLRequest(URL: url)
@@ -108,23 +107,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 let webVCNav = UINavigationController()
                 webVCNav.pushViewController(webVC, animated: false)
                 self.presentViewController(webVCNav, animated: true, completion: nil)
-                
-//                dispatch_async(dispatch_get_main_queue(), {
-//                    self.presentViewController(webVCNav, animated: true, completion: nil)
-//                })
-
             }
-//            if let url = NSURL(string: annotationView.annotation?.subtitle?),
-//                request = NSURLRequest(URL: url){
-//                    println(request)
-//            }
-//            if let request = NSURLRequest(URL: NSURL(string: annotationView.annotation.subtitle?))
-//            WebViewController.pushWebView(request, fromViewController: self)
         }
     }
-    
-//    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
-//        println("YoMoFo. Annotation Selected: \(view)")
-//    }
     
  }

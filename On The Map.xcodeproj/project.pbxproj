@@ -23,6 +23,7 @@
 		D8B856D11AC98FBA00DB03C3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8B856CF1AC98FBA00DB03C3 /* LaunchScreen.xib */; };
 		D8B856DD1AC98FBA00DB03C3 /* On_The_MapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B856DC1AC98FBA00DB03C3 /* On_The_MapTests.swift */; };
 		D8CE26201AD6FAB600F23584 /* PostLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CE261F1AD6FAB600F23584 /* PostLocationViewController.swift */; };
+		D8EE2A681ADEC0F200C9CA91 /* StudentListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE2A671ADEC0F200C9CA91 /* StudentListViewController.swift */; };
 		D8F2C9311ACA1F6000B11B20 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,7 @@
 		D8B856DB1AC98FBA00DB03C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8B856DC1AC98FBA00DB03C3 /* On_The_MapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = On_The_MapTests.swift; sourceTree = "<group>"; };
 		D8CE261F1AD6FAB600F23584 /* PostLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostLocationViewController.swift; sourceTree = "<group>"; };
+		D8EE2A671ADEC0F200C9CA91 /* StudentListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentListViewController.swift; sourceTree = "<group>"; };
 		D8F0BA041ADC44B80001FA22 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		D8F0BA051ADC450C0001FA22 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		D8F0BA061ADC450C0001FA22 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				D8CE261F1AD6FAB600F23584 /* PostLocationViewController.swift */,
 				D8037DB61AD7EFC700278BF9 /* PostMapViewController.swift */,
 				D8A73C621ADAA609008DB418 /* WebViewController.swift */,
+				D8EE2A671ADEC0F200C9CA91 /* StudentListViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 				D8A3F1E41ADD0C9C006B11EE /* StudentsManager.swift in Sources */,
 				D8F2C9311ACA1F6000B11B20 /* MapViewController.swift in Sources */,
 				D8B856C71AC98FBA00DB03C3 /* AppDelegate.swift in Sources */,
+				D8EE2A681ADEC0F200C9CA91 /* StudentListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
