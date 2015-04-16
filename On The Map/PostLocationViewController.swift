@@ -78,8 +78,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
         //                self.topConstraint.constant = self.view.frame.minY
         //                self.lowerButtonTopConstraint.constant += 300
         self.view.layoutIfNeeded()},
-      completion: { whatevs in println("DINGLEBERRY")}
-    )
+      completion: nil)
     
   }
   
@@ -156,17 +155,11 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
   // This delegate method is implemented to respond to taps. It opens the system browser
   // to the URL specified in the annotationViews subtitle property.
   func mapView(mapView: MKMapView!, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-    
-    println("Control Tapped: \(control)")
-    
+
     if control == annotationView.leftCalloutAccessoryView {
       let app = UIApplication.sharedApplication()
       app.openURL(NSURL(string: annotationView.annotation.subtitle!)!)
     }
-  }
-  
-  func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
-    println("YoMoFo. Annotation Selected: \(view)")
   }
   
   // MARK: - IBActions
@@ -181,46 +174,29 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
   
   func postLocation() {
     //Check for existing StudentLocation using user.uniqueKey
-    //      println("Checking for existing FAKE key: 1663958653")
-    //      Alamofire.request(UdacityClient.Router.ParseQuery("1663958653"))
     User.sharedInstance.info.mediaURL = self.locationEntryField.text
-    println("Checking for existing key: \(User.sharedInstance.info.uniqueKey)")
     Alamofire.request(UdacityClient.Router.ParseQuery(User.sharedInstance.info.uniqueKey))
     .responseJSON { (_, res, data, error) in
       //THIS COULD RETURN MULTIPLES IF THE STUDENT POSTED WITHOUT CHECKING
-      
       if let networkerror = error {
-        println("Network error checking existing records: \(networkerror.localizedDescription)")
-        println(res)
+        //TOOD: display error
         return
       }
       
       let results = JSON(data!)["results"]
-      println("GOT THE RESULTS")
-      //need to get objectId
-      
       if results.count > 0 {
         //get the first record and overwrite it
-        println("\(results.count) records Found. PUTting update here")
         if let objectId = results[0]["objectId"].string {
-          //            User.sharedInstance.info.objectID = objectId
-          println("Attempting update of record with id: \(objectId)")
-          
+
           Alamofire.request(UdacityClient.Router.ParsePut(objectId ,User.sharedInstance.info))
           .responseJSON { (_, res, data, error) in
             
-            println(res)
-            
             if let networkerror = error {
-              println("Network error updating records: \(networkerror.localizedDescription)")
-              println(res)
               //TODO: display error popup
               return // from Put closure
             }
             
-            let json = JSON(data!)
-            println(json)
-            
+//            let json = JSON(data!) // don't need this unless you process it somehow
             self.dismissViewControllerAnimated(true, completion: nil)
             
           }
@@ -228,23 +204,15 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
         }
       }
         
-      println("No records found. POST here")
+//      println("No records found. POST here")
       Alamofire.request(UdacityClient.Router.ParsePost(User.sharedInstance.info))
       .responseJSON { (_, res, data, error) in
-        
-        println(res)
-        println(data)
-        println(error)
-        
+
         if let networkerror = error {
-          println("Network error posting records: \(networkerror.localizedDescription)")
-          println(res)
+          //TODO: display error
           return
         }
-        
-        let json = JSON(data!)
-        println(json)
-        
+//        let json = JSON(data!) // don't need this unless you process it somehow
         self.dismissViewControllerAnimated(true, completion: nil)
           
       }
@@ -273,25 +241,19 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
       self.locateButton.enabled = true
       
       if let error = error {
-        println("Geocode failed with error: \(error.localizedDescription)")
-        
         let alert = UIAlertController(title: "Location Error:", message: error.localizedDescription, preferredStyle: .Alert)
-        //                    let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in println("Clicked OK") }
         alert.addAction(UIAlertAction(title: "Drats!", style: .Default) { action in
-          println("Clicked OK")
           self.spinner.stopAnimating()
           })
-        self.presentViewController(alert, animated: true) { println("Completed") }
+        self.presentViewController(alert, animated: true, completion: nil)
         return
       }
       
-      println("Placemarks: \(placemarks.count)")
       if placemarks.count > 0 {
         //just grab the first result
         self.placemark = placemarks[0] as! CLPlacemark
         let location = self.placemark.location
-        println(location)
-        
+
         //show map view with location
         // instantiate postMapVC and pass it location
         // Create a new variable to store the instance of PlayerTableViewController

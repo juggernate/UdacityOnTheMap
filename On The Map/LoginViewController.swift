@@ -47,8 +47,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       .response() { (_, _, DATA, ERROR) in
         
         if let networkError = ERROR {
-          println("SHOWING ERROR:")
-          println(networkError.localizedDescription)
           self.displayError(networkError.localizedDescription)
           return
         }
@@ -59,29 +57,20 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
           let jsn = JSON(data: newData)
           
           if let loginError = jsn["error"].string {
-            println("Login Error:")
-            println(loginError)
             //TODO: strip "trails.Error 4xx: " if it exists in message for nicer presentation
             let alert = UIAlertController(title: "Login Error:", message: loginError, preferredStyle: .Alert)
             alert.addAction(UIAlertAction(title: "OK", style: .Default) { action in
-              println("Clicked OK")
               self.spinner.stopAnimating()
               })
-            self.presentViewController(alert, animated: true) { println("Completed") }
+            self.presentViewController(alert, animated: true, completion: nil)
           }
           
           if let accountID = jsn["account"]["key"].string {
-            println("ACCOUNT ID:")
-            println(accountID)
-            
             User.sharedInstance.info.uniqueKey = accountID
             
             Alamofire.request(UdacityClient.Router.UdacityInfo(accountID)).response() {(_, _, DATA, ERROR) in
               if let networkError = ERROR {
-                println("SHOWING ERROR:")
-                println(networkError.localizedDescription)
                 self.displayError(networkError.localizedDescription)
-                println("Did it work?")
                 return
               }
               
@@ -90,20 +79,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 let jsn = JSON(data: newData)
                 
                 if let loginError = jsn["error"].string {
-                  println("GET UserInfo Error:")
-                  println(loginError)
                   //TODO: strip "trails.Error 4xx: " if it exists in message
                   let alert = UIAlertController(title: "Login User Error:", message: loginError, preferredStyle: .Alert)
                   alert.addAction(UIAlertAction(title: "OK", style: .Default) { action in
-                    println("Clicked OK")
                     self.spinner.stopAnimating()
                     })
-                  self.presentViewController(alert, animated: true) { println("Completed") }
+                  self.presentViewController(alert, animated: true, completion: nil)
                 }
                 
                 if let firstname = jsn["user"]["first_name"].string,
                   lastname = jsn["user"]["last_name"].string {
-                    println("Hello \(firstname) \(lastname)! AKA \(accountID)" )
                     User.sharedInstance.info.firstName = firstname
                     User.sharedInstance.info.lastName = lastname
                     self.performSegueWithIdentifier("SignInComplete", sender: self)
@@ -118,35 +103,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   
   
   // MARK: - LoginViewController
-  
-//  func completeLogin() {
-//    dispatch_async(dispatch_get_main_queue()) {
-//      let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as! UINavigationController
-//      self.presentViewController(controller, animated: true, completion: nil)
-//    }
-//  }
-  
+
   @IBAction func accountSignUp(sender: UIButton) {
-    
-    //TODO: refactor name
+
     let signupURL = NSURL(string: "https://www.udacity.com/account/auth#!/signin")!
-    //        UIApplication.sharedApplication().openURL(signupURL)
     let request = NSURLRequest(URL: signupURL)
-    
-    //        let authorizationURL = NSURL(string: "\(TMDBClient.Constants.AuthorizationURL)\(requestToken!)")
-    //        let request = NSURLRequest(URL: authorizationURL!)
-    let webAuthViewController = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
-    webAuthViewController.urlRequest = request
-    webAuthViewController.navTitle = "Udacity Account Sign Up"
-    //        webAuthViewController.requestToken = requestToken
-    //        webAuthViewController.completionHandler = completionHandler
-    
-    //put it in a navController so you can automatically have navBar...
-    let webAuthNavigationController = UINavigationController()
-    webAuthNavigationController.pushViewController(webAuthViewController, animated: false)
+
+    let webVC = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+    webVC.urlRequest = request
+    webVC.navTitle = "Udacity Account Sign Up"
+
+    let webNavVC = UINavigationController()
+    webNavVC.pushViewController(webVC, animated: false)
     
     dispatch_async(dispatch_get_main_queue(), {
-      self.presentViewController(webAuthNavigationController, animated: true, completion: nil)
+      self.presentViewController(webNavVC, animated: true, completion: nil)
     })
     
   }
@@ -155,12 +126,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     dispatch_async(dispatch_get_main_queue(), {
       
       if let errorString = errorString {
-        //                self.debugTextLabel.text = errorString
         
         let alertController = UIAlertController(title: "Network Error", message: errorString, preferredStyle: .Alert)
-        let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-          println("Clicked OK")
-        }
+        let OKAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
         alertController.addAction(OKAction)
         self.presentViewController(alertController, animated: true) {
           self.spinner.stopAnimating()

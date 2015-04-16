@@ -16,7 +16,6 @@ class StudentsManager: NSObject {
   var students = [Student]()
   
   func updateStudentsList(results: [JSON], completionHandler:([Student])->Void) {
-    println("RESULT COUNT: \(results.count)")
     if results.count < 1 {
       return
     }
@@ -51,29 +50,22 @@ class StudentsManager: NSObject {
   }
   
   func updateStudentsList(completionHandler:([Student])->Void) {
-    
-    println("CHECKIN CHICKENZ")
-    
+
     Alamofire.request(UdacityClient.Router.Parse).responseJSON() {
       (_, _, DATA, ERROR) in
   
       if let networkError = ERROR {
-//        println("SHOWING ERROR:")
-        println(networkError.localizedDescription)
-        //                    self.displayError(networkError.localizedDescription)
-//        println("Did it work?")
+        //TODO: add display error
         return
       }
       
       if let data: AnyObject = DATA {
         let json = JSON(data)
-        println("Da JSON")
-        //                println(json)
         if let results = json["results"].array {
           self.updateStudentsList(results, completionHandler:completionHandler)
         }
       } else {
-        println("NO JSON SO SAD")
+        //display error?
       }
     }
   }

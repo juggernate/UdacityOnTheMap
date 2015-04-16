@@ -33,7 +33,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
   
   func updateStudenList() {
     StudentsManager.sharedInstance.updateStudentsList{ students in
-      println("GOT THE STUDENTS BACK")
       self.makeAnnotations(students)
     }
   }
@@ -64,11 +63,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
       annotations.append(annotation)
       
     }
-    println("Clearing Annotations")
     self.mapView.removeAnnotations(self.mapView.annotations)
-    println("Adding Annotations")
     self.mapView.addAnnotations(annotations)
-    //        self.mapView
   }
   
   // MARK: - MKMapViewDelegate
@@ -105,14 +101,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
   // to the URL specified in the annotationViews subtitle property.
   func mapView(mapView: MKMapView!, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
     
-    println("Control Tapped: \(control)")
-    
     if control == annotationView.leftCalloutAccessoryView {
       
       if let urlString = annotationView.annotation.subtitle,
         url = NSURL(string: urlString) {
           let request = NSURLRequest(URL: url)
-          println(request)
           let webVC = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
           webVC.urlRequest = request
           webVC.navTitle = "Student URL"

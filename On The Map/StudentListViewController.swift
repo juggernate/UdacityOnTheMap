@@ -40,7 +40,6 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
     let student = StudentsManager.sharedInstance.students[indexPath.row]
     if let url = NSURL(string: student.mediaURL) {
       let request = NSURLRequest(URL: url)
-      println(request)
       let webVC = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
       webVC.urlRequest = request
       webVC.navTitle = "\(student.firstName) shared:"
@@ -63,11 +62,7 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
   
   func updateStudenList() {
     StudentsManager.sharedInstance.updateStudentsList{ students in
-      println("GOT THE STUDENTS BACK")
-      //      self.makeAnnotations(students)
-      //TODO update stuffs tableView here
       self.tableView.reloadData()
-      
     }
   }
   
