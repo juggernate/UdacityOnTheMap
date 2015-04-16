@@ -12,7 +12,7 @@ import MapKit
 import Alamofire
 import SwiftyJSON
 
-class PostLocationViewController: UIViewController, MKMapViewDelegate {
+class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFieldDelegate {
   
   @IBOutlet weak var locationEntryField: UITextField!
   @IBOutlet weak var spinner: UIActivityIndicatorView!
@@ -38,6 +38,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
     super.viewDidLoad()
     
     mapView.delegate = self
+    locationEntryField.delegate = self
     //        locationEntryField.delegate = self
     //        locateButton.enabled = false
     // Do any additional setup after loading the view.
@@ -82,12 +83,38 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
     
   }
   
+  func textFieldShouldReturn(textField: UITextField) -> Bool {
+    textField.resignFirstResponder()
+    
+    if textField.keyboardType == UIKeyboardType.Default {
+      geocodeUserText()
+    }
+    
+    if textField.keyboardType == UIKeyboardType.URL {
+      postLocation()
+    }
+    
+    return true
+  }
+  
+  func convertTopForURL() {
+    //update top label and textField to work with URL entry
+    if locationEntryField.isFirstResponder(){
+      locationEntryField.resignFirstResponder()
+    }
+    self.whereLabel.text = "What is thine URL?"
+    self.locationEntryField.clearsOnBeginEditing = false
+    self.locationEntryField.keyboardType = UIKeyboardType.URL
+    self.locationEntryField.placeholder = "http://"
+    self.locationEntryField.text = "http://"
+  }
+  
   func animateTopLayers() {
     
     UIView.animateWithDuration(1, delay: 0,
       usingSpringWithDamping: 0.25,
       initialSpringVelocity: 2.8,
-      options: .CurveEaseInOut,
+      options: UIViewAnimationOptions.CurveEaseInOut,
       animations: {
         //                self.bottomHeight.constant = self.view.bounds.height * 0.8
         self.bottomOffset.constant -= self.view.bounds.height * 0.8
@@ -95,16 +122,10 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
         self.topLabelGrp.backgroundColor = self.urlBackgroudColor
         //                self.lowerButtonTopConstraint.constant += 300
         self.view.layoutIfNeeded()},
-      completion: {
-        whatevs in println("REMOVED TOP LAYERS")
-        self.whereLabel.text = "What is thine URL?"
-        self.locationEntryField.placeholder = "http://brusheez.net"
-        self.locationEntryField.text = "http://"
-
-//        self.topLabelGrp.removeFromSuperview()
+      completion: { (_) in
+        self.convertTopForURL()
       }
     )
-    
   }
   
   // MARK: - MKMapViewDelegate
@@ -154,7 +175,11 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
     self.dismissViewControllerAnimated(true, completion: nil)
   }
   
-  @IBAction func postLocation(sender: UIBarButtonItem) {
+  @IBAction func postLocation(sender: UIBarButtonItem){
+    postLocation()
+  }
+  
+  func postLocation() {
     //Check for existing StudentLocation using user.uniqueKey
     //      println("Checking for existing FAKE key: 1663958653")
     //      Alamofire.request(UdacityClient.Router.ParseQuery("1663958653"))
@@ -229,6 +254,13 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
   // MARK: - Geocoding
   
   @IBAction func geocodeUserText(sender: UIButton) {
+    if locationEntryField.isFirstResponder(){
+      locationEntryField.resignFirstResponder()
+    }
+    geocodeUserText()
+  }
+  
+  func geocodeUserText() {
     locateButton.enabled = false
     spinner.startAnimating()
     // geocode string in text field
@@ -273,7 +305,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
         
         //TODO set annotion
         
-        var annotations = [MKPointAnnotation]()
+        var annotations = [MKPointAnnotation]() //Todo: array for showing other students with different icon at same time?
         
         let lat = CLLocationDegrees(User.sharedInstance.info.latitude)
         let long = CLLocationDegrees(User.sharedInstance.info.longitude)
@@ -284,24 +316,20 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
         var annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         annotation.title = "\(User.sharedInstance.info.firstName) \(User.sharedInstance.info.lastName)"
-        //                annotation.subtitle = mediaURL
         
-        
-        // Finally we place the annotation in an array of annotations.
         annotations.append(annotation)
         
         let span = MKCoordinateSpanMake(10, 10)
         let region = MKCoordinateRegion(center: coordinate, span: span)
         self.mapView.setRegion(region, animated: true)
-        //        }
-        
-        // When the array is complete, we add the annotations to the map.
+
         self.mapView.addAnnotations(annotations)
-        //                self.mapView.addAnnotation(annotation)
         self.shareLocation.enabled = true
         
       }
     }
   }
+  
+
   // MARK: - The end of the line, as far as we go
 }

@@ -10,10 +10,8 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-//private let _SharedInstance = StudentsManager()
-
 class StudentsManager: NSObject {
-  //singleton
+  //singleton in Swift 1.2
   static let sharedInstance = StudentsManager()
   var students = [Student]()
   
@@ -24,7 +22,6 @@ class StudentsManager: NSObject {
     }
     
     self.students.removeAll(keepCapacity: true)
-    //println(results[0])
     
     //results appear to come back newest last for now, cheap (but not best) way to order newest first is reverse results
     for student in results.reverse() {
@@ -58,17 +55,13 @@ class StudentsManager: NSObject {
     println("CHECKIN CHICKENZ")
     
     Alamofire.request(UdacityClient.Router.Parse).responseJSON() {
-      (a, b, DATA, ERROR) in
-      
-      //            println(a)
-      //            println(b)
-      //            println(DATA)
-      
+      (_, _, DATA, ERROR) in
+  
       if let networkError = ERROR {
-        println("SHOWING ERROR:")
+//        println("SHOWING ERROR:")
         println(networkError.localizedDescription)
         //                    self.displayError(networkError.localizedDescription)
-        println("Did it work?")
+//        println("Did it work?")
         return
       }
       

@@ -52,21 +52,18 @@ class UdacityClient: NSObject {
         
       case .Parse:
         let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
-        request.HTTPMethod = "GET" // this is the default, don't need to specify unless NOT GET?
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         return request
         
       case .ParseQuery(let uniqeKey):
-        let params = ["where":["uniqueKey": uniqeKey]] //??
+        let params = ["where":["uniqueKey": uniqeKey]]
         let mrequest = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
-        //                let urlString = "https://api.parse.com/1/classes/StudentLocation?where=%7B%22\(uniqeKey)%22%3A%221234%22%7D"
-        //                let url = NSURL(string: urlString)
-        //                let request = NSMutableURLRequest(URL: url!)
         mrequest.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         mrequest.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         
         var request = NSURLRequest()
+        //manually encode parameters?
         let encoding = Alamofire.ParameterEncoding.URL
         (request, _) = encoding.encode(mrequest, parameters: params)
         return request
@@ -90,8 +87,6 @@ class UdacityClient: NSObject {
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        //                request.HTTPBody = "{\"uniqueKey\": \"1234\", \"firstName\": \"John\", \"lastName\": \"Doe\",\"mapString\": \"Cupertino, CA\", \"mediaURL\": \"https://udacity.com\",\"latitude\": 37.322998, \"longitude\": -122.032182}".dataUsingEncoding(NSUTF8StringEncoding)
         
         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &JSONSerializationError)
         return request

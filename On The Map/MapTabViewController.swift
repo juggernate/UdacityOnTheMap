@@ -10,23 +10,22 @@ import UIKit
 
 class MapTabViewController: UITabBarController, UITabBarControllerDelegate
 {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        delegate = self
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    delegate = self
+  }
+  
+  func tabBarController(tabBarController: UITabBarController, shouldSelectViewController viewController: UIViewController) -> Bool {
+    // present the modal meme editor if dummy tab viewController is selected
+    if viewController.title == "MODAL"{
+      
+      let storyboard = UIStoryboard (name: "Main", bundle: nil)
+      let postEditorNav = storyboard.instantiateViewControllerWithIdentifier("PostEditor") as! PostLocationViewController
+      self.presentViewController(postEditorNav, animated: true, completion: nil)
+      //dummy tapped, should not select tab item
+      return false
     }
-    
-    func tabBarController(tabBarController: UITabBarController, shouldSelectViewController viewController: UIViewController) -> Bool {
-        // present the modal meme editor if dummy tab viewController is selected
-        if viewController.title == "MODAL"{
-            
-            let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            let postEditorNav = storyboard.instantiateViewControllerWithIdentifier("PostEditor") as! PostLocationViewController
-            self.presentViewController(postEditorNav, animated: true, completion: nil)
-            
-            return false
-        }
-        return true
-    }
-    
-    
+    return true
+  }
+  
 }
