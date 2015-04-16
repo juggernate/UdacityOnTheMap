@@ -37,8 +37,8 @@ class StudentsManager: NSObject {
         mediaURL = student["mediaURL"].string,
         uniqueKey = student["uniqueKey"].string
       {
-        println("\(objectId) Student \(uniqueKey) -- \(firstName) \(lastName) is at lat:\(latitude) lon:\(longitude) shared: \(mediaURL)")
-        //TODO construct annotation array
+//        println("\(objectId) Student \(uniqueKey) -- \(firstName) \(lastName) is at lat:\(latitude) lon:\(longitude) shared: \(mediaURL)")
+        
         var student = Student()
         student.firstName = firstName
         student.lastName = lastName

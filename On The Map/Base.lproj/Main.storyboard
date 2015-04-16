@@ -30,7 +30,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Students: On the Map" id="lXI-VK-1uK">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="bBU-j9-0sf"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="bBU-j9-0sf">
+                            <connections>
+                                <action selector="updateStudentList:" destination="BYZ-38-t0r" id="miM-ws-PuT"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="0E0-oy-QWo" id="jqz-l5-NG5"/>
@@ -222,10 +226,15 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Students: In the List" id="kku-Om-Qkt">
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="8HI-HT-vUo"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="8HI-HT-vUo">
+                            <connections>
+                                <action selector="updateStudentList:" destination="w3B-8k-J5L" id="iff-D3-d7M"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="refreshButton" destination="8HI-HT-vUo" id="9c1-3H-a7V"/>
+                        <outlet property="tableView" destination="IyX-Wm-OM6" id="bq0-ph-z59"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bra-P7-QRG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -247,7 +256,7 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="vcb-67-YSs">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </mapView>
-                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YYE-8z-krF" userLabel="TopLabelContainerGrp">
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YYE-8z-krF" userLabel="TopPlaceGrp">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="120"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where art thou?" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iIz-if-Jzu">

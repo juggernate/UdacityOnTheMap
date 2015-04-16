@@ -27,17 +27,26 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
   @IBOutlet weak var topLabelGrp: UIView!
   @IBOutlet weak var shareLocation: UIBarButtonItem!
   
+  
   var placemark: CLPlacemark!
+  
+  let pinImage = UIImage(named: "PinIcon")
+//  [UIColor colorWithRed:0.62 green:0.77 blue:0.91 alpha:1.0]
+  let urlBackgroudColor = UIColor(red: 0.62, green: 0.77, blue: 0.91, alpha: 1.0)
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    mapView.delegate = self
     //        locationEntryField.delegate = self
     //        locateButton.enabled = false
     // Do any additional setup after loading the view.
     //        self.topConstraint.constant -= self.view.bounds.height
     //        self.topConstraint.constant -= 40
-    self.bottomHeight.constant = self.view.bounds.height * 0.2
+    self.bottomHeight.constant = self.view.bounds.height * 0.8
+//    self.view.layoutIfNeeded()
     
+    //debug data when bypassing login
     if User.sharedInstance.info.uniqueKey == "" {
       User.sharedInstance.info.firstName = "Gruncle"
       User.sharedInstance.info.lastName = "Carbuncle"
@@ -48,12 +57,8 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
     
     whereLabel.text = "Where art thou \(User.sharedInstance.info.firstName)?"
     shareLocation.enabled = false
-    topLabelGrp.alpha = 0
-  }
-  
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
+    topLabelGrp.alpha = 1
+//    self.view.layoutIfNeeded()
   }
   
   override func viewDidAppear(animated: Bool) {
@@ -61,12 +66,12 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
     //        view.removeConstraint(lowerButtonTopConstraint)
     
     
-    UIView.animateWithDuration(1, delay: 0,
+    UIView.animateWithDuration(1, delay: 1,
       usingSpringWithDamping: 0.5,
       initialSpringVelocity: 0.8,
       options: .CurveEaseInOut,
       animations: {
-        self.bottomHeight.constant = self.view.bounds.height * 0.8
+//        self.bottomHeight.constant = self.view.bounds.height * 0.8
         self.topLabelGrp.alpha = 1
         //                self.bottomOffset.constant -= 50
         //                self.topConstraint.constant = self.view.frame.minY
@@ -77,11 +82,6 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
     
   }
   
-  //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-  //        //prep?
-  //        let destinationVC = segue.destinationViewController as PostMapViewController
-  //    }
-  
   func animateTopLayers() {
     
     UIView.animateWithDuration(1, delay: 0,
@@ -91,13 +91,17 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
       animations: {
         //                self.bottomHeight.constant = self.view.bounds.height * 0.8
         self.bottomOffset.constant -= self.view.bounds.height * 0.8
-        self.topConstraint.constant -= self.view.bounds.height * 0.2
-        self.topLabelGrp.alpha = 0
+//        self.topConstraint.constant -= self.view.bounds.height * 0.2
+        self.topLabelGrp.backgroundColor = self.urlBackgroudColor
         //                self.lowerButtonTopConstraint.constant += 300
         self.view.layoutIfNeeded()},
       completion: {
         whatevs in println("REMOVED TOP LAYERS")
-        self.topLabelGrp.removeFromSuperview()
+        self.whereLabel.text = "What is thine URL?"
+        self.locationEntryField.placeholder = "http://brusheez.net"
+        self.locationEntryField.text = "http://"
+
+//        self.topLabelGrp.removeFromSuperview()
       }
     )
     
@@ -105,9 +109,6 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
   
   // MARK: - MKMapViewDelegate
   
-  // Here we create a view with a "right callout accessory view". You might choose to look into other
-  // decoration alternatives. Notice the similarity between this method and the cellForRowAtIndexPath
-  // method in TableViewDataSource.
   func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
     
     //        println("VIEW FOR ANNOTATION:")
@@ -119,7 +120,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
     if pinView == nil {
       pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
       pinView!.canShowCallout = true
-      pinView!.pinColor = MKPinAnnotationColor.Purple
+//      pinView!.pinColor = MKPinAnnotationColor.Purple
       //            pinView!.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as UIButton
       pinView!.leftCalloutAccessoryView = UIButton.buttonWithType(UIButtonType.InfoDark) as! UIButton
     }
@@ -127,11 +128,9 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
       pinView!.annotation = annotation
     }
     
+    pinView?.image = pinImage
     return pinView
   }
-  
-  
-  
   
   // This delegate method is implemented to respond to taps. It opens the system browser
   // to the URL specified in the annotationViews subtitle property.
@@ -159,6 +158,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
     //Check for existing StudentLocation using user.uniqueKey
     //      println("Checking for existing FAKE key: 1663958653")
     //      Alamofire.request(UdacityClient.Router.ParseQuery("1663958653"))
+    User.sharedInstance.info.mediaURL = self.locationEntryField.text
     println("Checking for existing key: \(User.sharedInstance.info.uniqueKey)")
     Alamofire.request(UdacityClient.Router.ParseQuery(User.sharedInstance.info.uniqueKey))
     .responseJSON { (_, res, data, error) in
@@ -194,6 +194,9 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
             
             let json = JSON(data!)
             println(json)
+            
+            self.dismissViewControllerAnimated(true, completion: nil)
+            
           }
           
           return
@@ -215,6 +218,8 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
           
           let json = JSON(data!)
           println(json)
+          
+          self.dismissViewControllerAnimated(true, completion: nil)
             
         }
       }
@@ -295,9 +300,8 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
         //                self.mapView.addAnnotation(annotation)
         self.shareLocation.enabled = true
         
-        
       }
     }
   }
-  
+  // MARK: - The end of the line, as far as we go
 }
