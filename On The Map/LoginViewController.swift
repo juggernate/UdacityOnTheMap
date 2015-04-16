@@ -57,7 +57,6 @@ class LoginViewController: UIViewController {
                 println("SHOWING ERROR:")
                 println(networkError.localizedDescription)
                 self.displayError(networkError.localizedDescription)
-                println("Did it work?")
                 return
             }
             
@@ -65,8 +64,8 @@ class LoginViewController: UIViewController {
                 //strip the first 5 from data (security thing?)
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
                 let jsn = JSON(data: newData)
-                println("JSNOOOOO")
-                println(jsn)
+//                println("JSNOOOOO")
+//                println(jsn)
                 
                 if let loginError = jsn["error"].string {
                     println("Login Error:")
@@ -85,7 +84,7 @@ class LoginViewController: UIViewController {
                     println("ACCOUNT ID:")
                     println(accountID)
                     
-                    User.sharedInstance.info.objectID = accountID
+                    User.sharedInstance.info.uniqueKey = accountID
                     
                     Alamofire.request(UdacityClient.Router.UdacityInfo(accountID)).response() {(_, _, DATA, ERROR) in
                         if let networkError = ERROR {
@@ -99,8 +98,8 @@ class LoginViewController: UIViewController {
                         if let data: AnyObject = DATA{
                             let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
                             let jsn = JSON(data: newData)
-                            println("JSNOOOOOWWWWW")
-                            println(jsn)
+//                            println("JSNOOOOOWWWWW")
+//                            println(jsn)
                             
                             if let loginError = jsn["error"].string {
                                 println("GET UserInfo Error:")
@@ -115,19 +114,14 @@ class LoginViewController: UIViewController {
                                 self.presentViewController(alert, animated: true) { println("Completed") }
                             }
                             
-//                            if let 
-                            
-                            if let firstname = jsn["user"]["first_name"].string {
-                                if let lastname = jsn["user"]["last_name"].string {
-                                    println("Hello \(firstname) \(lastname)!" )
-                                    User.sharedInstance.info.firstName = firstname
-                                    User.sharedInstance.info.lastName = lastname
-                                    self.performSegueWithIdentifier("SignInComplete", sender: self)
-                                }
+                            if let firstname = jsn["user"]["first_name"].string,
+                            lastname = jsn["user"]["last_name"].string {
+                                println("Hello \(firstname) \(lastname)! AKA \(accountID)" )
+                                User.sharedInstance.info.firstName = firstname
+                                User.sharedInstance.info.lastName = lastname
+                                self.performSegueWithIdentifier("SignInComplete", sender: self)
                             }
-                            
                         }
-                        
                     }
                 }
             }
