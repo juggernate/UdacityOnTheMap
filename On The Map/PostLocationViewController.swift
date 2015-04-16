@@ -171,7 +171,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
       }
       
       let results = JSON(data!)["results"]
-      
+      println("GOT THE RESULTS")
       //need to get objectId
       
       if results.count > 0 {
@@ -189,7 +189,8 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
             if let networkerror = error {
               println("Network error updating records: \(networkerror.localizedDescription)")
               println(res)
-              return
+              //TODO: display error popup
+              return // from Put closure
             }
             
             let json = JSON(data!)
@@ -198,30 +199,29 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate {
             self.dismissViewControllerAnimated(true, completion: nil)
             
           }
-          
+          return // from top request closure
+        }
+      }
+        
+      println("No records found. POST here")
+      Alamofire.request(UdacityClient.Router.ParsePost(User.sharedInstance.info))
+      .responseJSON { (_, res, data, error) in
+        
+        println(res)
+        println(data)
+        println(error)
+        
+        if let networkerror = error {
+          println("Network error posting records: \(networkerror.localizedDescription)")
+          println(res)
           return
         }
         
-        println("No records found. POST here")
-        Alamofire.request(UdacityClient.Router.ParsePost(User.sharedInstance.info))
-        .responseJSON { (_, res, data, error) in
+        let json = JSON(data!)
+        println(json)
+        
+        self.dismissViewControllerAnimated(true, completion: nil)
           
-          println(res)
-          println(data)
-          println(error)
-          
-          if let networkerror = error {
-            println("Network error posting records: \(networkerror.localizedDescription)")
-            println(res)
-            return
-          }
-          
-          let json = JSON(data!)
-          println(json)
-          
-          self.dismissViewControllerAnimated(true, completion: nil)
-            
-        }
       }
     }
   }
