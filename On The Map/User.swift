@@ -13,12 +13,4 @@ class User {
   var info = Student()
   static let sharedInstance = User()
   
-  func hardCodeFakers() {
-    self.info.firstName = "Uncle"
-    self.info.lastName = "Carbuncle"
-    self.info.mapString = "DingleBerry, Utah"
-    self.info.mediaURL = "http://iboopedya.ytmnd.com/"
-    self.info.uniqueKey = "4815162342"
-  }
-  
 }

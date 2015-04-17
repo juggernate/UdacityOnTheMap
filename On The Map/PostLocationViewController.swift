@@ -18,7 +18,6 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
   @IBOutlet weak var spinner: UIActivityIndicatorView!
   @IBOutlet weak var locateButton: UIButton!
   @IBOutlet weak var topConstraint: NSLayoutConstraint!
-  //    @IBOutlet weak var lowerButtonTopConstraint: NSLayoutConstraint!
   @IBOutlet weak var bottomHeight: NSLayoutConstraint!
   @IBOutlet weak var bottomOffset: NSLayoutConstraint!
   @IBOutlet weak var mapView: MKMapView!
@@ -31,7 +30,6 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
   var placemark: CLPlacemark!
   
   let pinImage = UIImage(named: "PinIcon")
-//  [UIColor colorWithRed:0.62 green:0.77 blue:0.91 alpha:1.0]
   let urlBackgroudColor = UIColor(red: 0.62, green: 0.77, blue: 0.91, alpha: 1.0)
   
   override func viewDidLoad() {
@@ -39,15 +37,10 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
     
     mapView.delegate = self
     locationEntryField.delegate = self
-    //        locationEntryField.delegate = self
-    //        locateButton.enabled = false
-    // Do any additional setup after loading the view.
-    //        self.topConstraint.constant -= self.view.bounds.height
-    //        self.topConstraint.constant -= 40
+
     self.bottomHeight.constant = self.view.bounds.height * 0.8
-//    self.view.layoutIfNeeded()
     
-    //debug data when bypassing login
+    //fake debug data when bypassing login
     if User.sharedInstance.info.uniqueKey == "" {
       User.sharedInstance.info.firstName = "Gruncle"
       User.sharedInstance.info.lastName = "Carbuncle"
@@ -59,28 +52,8 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
     whereLabel.text = "Where art thou \(User.sharedInstance.info.firstName)?"
     shareLocation.enabled = false
     topLabelGrp.alpha = 1
-//    self.view.layoutIfNeeded()
   }
   
-  override func viewDidAppear(animated: Bool) {
-    
-    //        view.removeConstraint(lowerButtonTopConstraint)
-    
-    
-    UIView.animateWithDuration(1, delay: 1,
-      usingSpringWithDamping: 0.5,
-      initialSpringVelocity: 0.8,
-      options: .CurveEaseInOut,
-      animations: {
-//        self.bottomHeight.constant = self.view.bounds.height * 0.8
-        self.topLabelGrp.alpha = 1
-        //                self.bottomOffset.constant -= 50
-        //                self.topConstraint.constant = self.view.frame.minY
-        //                self.lowerButtonTopConstraint.constant += 300
-        self.view.layoutIfNeeded()},
-      completion: nil)
-    
-  }
   
   func textFieldShouldReturn(textField: UITextField) -> Bool {
     textField.resignFirstResponder()
@@ -115,11 +88,8 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
       initialSpringVelocity: 2.8,
       options: UIViewAnimationOptions.CurveEaseInOut,
       animations: {
-        //                self.bottomHeight.constant = self.view.bounds.height * 0.8
         self.bottomOffset.constant -= self.view.bounds.height * 0.8
-//        self.topConstraint.constant -= self.view.bounds.height * 0.2
         self.topLabelGrp.backgroundColor = self.urlBackgroudColor
-        //                self.lowerButtonTopConstraint.constant += 300
         self.view.layoutIfNeeded()},
       completion: { (_) in
         self.convertTopForURL()
@@ -131,8 +101,6 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
   
   func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
     
-    //        println("VIEW FOR ANNOTATION:")
-    
     let reuseId = "pin"
     
     var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
@@ -140,8 +108,6 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
     if pinView == nil {
       pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
       pinView!.canShowCallout = true
-//      pinView!.pinColor = MKPinAnnotationColor.Purple
-      //            pinView!.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as UIButton
       pinView!.leftCalloutAccessoryView = UIButton.buttonWithType(UIButtonType.InfoDark) as! UIButton
     }
     else {
@@ -173,7 +139,6 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
   }
   
   @IBAction func postLocation() {
-    //Check for existing StudentLocation using user.uniqueKey
     //first validate URL
     let candidateURL = NSURL(string: self.locationEntryField.text)
     if let url = candidateURL,

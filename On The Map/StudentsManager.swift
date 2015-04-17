@@ -33,7 +33,6 @@ class StudentsManager: NSObject {
         mediaURL = studentJSON["mediaURL"].string,
         uniqueKey = studentJSON["uniqueKey"].string
       {
-//        println("\(objectId) Student \(uniqueKey) -- \(firstName) \(lastName) is at lat:\(latitude) lon:\(longitude) shared: \(mediaURL)")
         let student = Student(json: studentJSON)
         students.append(student)
       }
@@ -58,7 +57,7 @@ class StudentsManager: NSObject {
           self.updateStudentsList(results, completionHandler:completionHandler)
         }
       } else {
-        //display error?
+        //TODO: display error?
       }
     }
   }

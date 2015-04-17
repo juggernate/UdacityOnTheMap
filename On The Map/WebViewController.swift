@@ -15,9 +15,6 @@ class WebViewController: UIViewController, UIWebViewDelegate {
     var urlRequest: NSURLRequest? = nil
     var navTitle: String? = nil
     
-//    var requestToken: String? = nil
-//    var completionHandler : ((success: Bool, errorString: String?) -> Void)? = nil
-    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {

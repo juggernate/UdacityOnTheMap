@@ -14,9 +14,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   @IBOutlet weak var userField: UITextField!
   @IBOutlet weak var passwordField: UITextField!
   
-//  var appDelegate: AppDelegate!
-//  var session: NSURLSession!
-  
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
@@ -25,19 +22,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     userField.delegate = self
     passwordField.delegate = self
-    /* Get the app delegate */
-//    appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
-    /* Get the shared URL session */
-//    session = NSURLSession.sharedSession()
-    
-    /* Configure the UI */
+    /* TODO: Configure the UI */
     //        self.configureUI()
   }
-  
-//  @IBAction func login(sender: AnyObject) {
-//    login()
-//  }
   
   @IBAction func login() {
     

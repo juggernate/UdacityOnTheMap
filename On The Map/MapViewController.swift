@@ -56,14 +56,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
       let last = student.lastName
       let mediaURL = student.mediaURL
       
-      // Here we create the annotation and set its coordiate, title, and subtitle properties
       var annotation = MKPointAnnotation()
       annotation.coordinate = coordinate
       annotation.title = "\(first) \(last)"
       annotation.subtitle = mediaURL
-      //
-      
-      // Finally we place the annotation in an array of annotations.
       annotations.append(annotation)
       
     }
@@ -73,9 +69,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
   
   // MARK: - MKMapViewDelegate
   
-  // Here we create a view with a "right callout accessory view". You might choose to look into other
-  // decoration alternatives. Notice the similarity between this method and the cellForRowAtIndexPath
-  // method in TableViewDataSource.
   func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
     
     let reuseId = "pin"
@@ -85,8 +78,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     if pinView == nil {
       pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
       pinView!.canShowCallout = true
-      //            pinView!.image = UIImage(contentsOfFile: "PinIcon")
-//      pinView!.image = pinImage
       pinView!.pinColor = .Purple
       pinView!.leftCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIButton//
     }
@@ -94,7 +85,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
       pinView!.annotation = annotation
     }
     
-//    tintedImage =
     pinView?.image = pinImage
     
     return pinView

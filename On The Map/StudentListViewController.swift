@@ -17,20 +17,15 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
     super.viewDidLoad()
     self.tableView.delegate = self
     self.tableView.dataSource = self
-    //update student list if empty?
-    //        updateStudentList(sender: nil)
+
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier("StudentCell") as! UITableViewCell
-    //        let meme = memes[indexPath.row]
     
     let student = StudentsManager.sharedInstance.students[indexPath.row]
     cell.textLabel?.text = "\(student.firstName) \(student.lastName)"
     cell.detailTextLabel?.text = student.mediaURL
-    //        cell.imageView?.image = meme.memeImage
-    //        cell.textLabel?.text = meme.topLabel
-    //        cell.detailTextLabel?.text = meme.bottomLabel
     
     return cell
   }
@@ -43,7 +38,7 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
       let webVC = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
       webVC.urlRequest = request
       webVC.navTitle = "\(student.firstName) shared:"
-      //put it in a navController to use title/cancel
+
       let webVCNav = UINavigationController()
       webVCNav.pushViewController(webVC, animated: false)
       self.presentViewController(webVCNav, animated: true, completion: nil)
