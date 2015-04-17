@@ -16,7 +16,6 @@
 		D8A922061AD5FB6100A19213 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A922051AD5FB6100A19213 /* LoginViewController.swift */; };
 		D8B7A0D91AD625FB00AF53C7 /* UdacityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B7A0D81AD625FB00AF53C7 /* UdacityClient.swift */; };
 		D8B856C71AC98FBA00DB03C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B856C61AC98FBA00DB03C3 /* AppDelegate.swift */; };
-		D8B856C91AC98FBA00DB03C3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B856C81AC98FBA00DB03C3 /* ViewController.swift */; };
 		D8B856CC1AC98FBA00DB03C3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8B856CA1AC98FBA00DB03C3 /* Main.storyboard */; };
 		D8B856CE1AC98FBA00DB03C3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8B856CD1AC98FBA00DB03C3 /* Images.xcassets */; };
 		D8B856D11AC98FBA00DB03C3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8B856CF1AC98FBA00DB03C3 /* LaunchScreen.xib */; };
@@ -49,7 +48,6 @@
 		D8B856C11AC98FBA00DB03C3 /* On The Map.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "On The Map.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8B856C51AC98FBA00DB03C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8B856C61AC98FBA00DB03C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D8B856C81AC98FBA00DB03C3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D8B856CB1AC98FBA00DB03C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D8B856CD1AC98FBA00DB03C3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D8B856D01AC98FBA00DB03C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -106,7 +104,6 @@
 			children = (
 				D8A922051AD5FB6100A19213 /* LoginViewController.swift */,
 				D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */,
-				D8B856C81AC98FBA00DB03C3 /* ViewController.swift */,
 				D88D43FA1AD6D68C00B5A190 /* MapTabViewController.swift */,
 				D8CE261F1AD6FAB600F23584 /* PostLocationViewController.swift */,
 				D8A73C621ADAA609008DB418 /* WebViewController.swift */,
@@ -345,7 +342,6 @@
 				D8A73C631ADAA609008DB418 /* WebViewController.swift in Sources */,
 				D88D43FB1AD6D68C00B5A190 /* MapTabViewController.swift in Sources */,
 				D8A922061AD5FB6100A19213 /* LoginViewController.swift in Sources */,
-				D8B856C91AC98FBA00DB03C3 /* ViewController.swift in Sources */,
 				D8CE26201AD6FAB600F23584 /* PostLocationViewController.swift in Sources */,
 				D8A3F1E41ADD0C9C006B11EE /* StudentsManager.swift in Sources */,
 				D8F2C9311ACA1F6000B11B20 /* MapViewController.swift in Sources */,

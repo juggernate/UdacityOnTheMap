@@ -172,14 +172,31 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
     postLocation()
   }
   
-  func postLocation() {
+  @IBAction func postLocation() {
     //Check for existing StudentLocation using user.uniqueKey
-    User.sharedInstance.info.mediaURL = self.locationEntryField.text
+    //first validate URL
+    let candidateURL = NSURL(string: self.locationEntryField.text)
+    if let url = candidateURL,
+    scheme = candidateURL?.scheme,
+    host = candidateURL?.host,
+    urlString = candidateURL?.absoluteString {
+      User.sharedInstance.info.mediaURL = urlString
+    }
+    
+    else {
+      let alert = UIAlertController(title: "Invalid URL:", message: self.locationEntryField.text, preferredStyle: .Alert)
+      alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+      self.presentViewController(alert, animated: true, completion: nil)
+      return
+    }
+    
     Alamofire.request(UdacityClient.Router.ParseQuery(User.sharedInstance.info.uniqueKey))
     .responseJSON { (_, res, data, error) in
       //THIS COULD RETURN MULTIPLES IF THE STUDENT POSTED WITHOUT CHECKING
       if let networkerror = error {
-        //TOOD: display error
+        let alert = UIAlertController(title: "Network Error:", message: networkerror.localizedDescription, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
         return
       }
       
@@ -192,7 +209,9 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
           .responseJSON { (_, res, data, error) in
             
             if let networkerror = error {
-              //TODO: display error popup
+              let alert = UIAlertController(title: "Network Error:", message: networkerror.localizedDescription, preferredStyle: .Alert)
+              alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+              self.presentViewController(alert, animated: true, completion: nil)
               return // from Put closure
             }
             
@@ -209,7 +228,9 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
       .responseJSON { (_, res, data, error) in
 
         if let networkerror = error {
-          //TODO: display error
+          let alert = UIAlertController(title: "Network Error:", message: networkerror.localizedDescription, preferredStyle: .Alert)
+          alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+          self.presentViewController(alert, animated: true, completion: nil)
           return
         }
 //        let json = JSON(data!) // don't need this unless you process it somehow
@@ -218,6 +239,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
       }
     }
   }
+  
   
   // MARK: - Geocoding
   

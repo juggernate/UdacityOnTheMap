@@ -56,11 +56,12 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
     return StudentsManager.sharedInstance.students.count
   }
   
-  @IBAction func updateStudentList(sender: UIBarButtonItem) {
-    updateStudenList()
+  
+  @IBAction func logout() {
+    self.dismissViewControllerAnimated(true, completion: nil)
   }
   
-  func updateStudenList() {
+  @IBAction func updateStudenList() {
     StudentsManager.sharedInstance.updateStudentsList{ students in
       self.tableView.reloadData()
     }

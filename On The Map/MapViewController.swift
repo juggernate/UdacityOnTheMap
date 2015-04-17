@@ -27,6 +27,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
   }
   
+  @IBAction func logout() {
+    self.dismissViewControllerAnimated(true, completion: nil)
+  }
+  
   @IBAction func updateStudentList(sender: UIBarButtonItem) {
     updateStudenList()
   }

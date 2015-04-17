@@ -23,25 +23,18 @@ class StudentsManager: NSObject {
     self.students.removeAll(keepCapacity: true)
     
     //results appear to come back newest last for now, cheap (but not best) way to order newest first is reverse results
-    for student in results.reverse() {
+    for studentJSON in results.reverse() {
       
-      if let firstName = student["firstName"].string,
-        lastName = student["lastName"].string,
-        latitude = student["latitude"].double,
-        longitude = student["longitude"].double,
-        objectId = student["objectId"].string, //this is unique auto-generated from Parse for each entry
-        mediaURL = student["mediaURL"].string,
-        uniqueKey = student["uniqueKey"].string
+      if let firstName = studentJSON["firstName"].string,
+        lastName = studentJSON["lastName"].string,
+        latitude = studentJSON["latitude"].double,
+        longitude = studentJSON["longitude"].double,
+        objectId = studentJSON["objectId"].string, //this is unique auto-generated from Parse for each entry
+        mediaURL = studentJSON["mediaURL"].string,
+        uniqueKey = studentJSON["uniqueKey"].string
       {
 //        println("\(objectId) Student \(uniqueKey) -- \(firstName) \(lastName) is at lat:\(latitude) lon:\(longitude) shared: \(mediaURL)")
-        
-        var student = Student()
-        student.firstName = firstName
-        student.lastName = lastName
-        student.latitude = latitude
-        student.longitude = longitude
-        student.mediaURL = mediaURL
-        student.uniqueKey = uniqueKey
+        let student = Student(json: studentJSON)
         students.append(student)
       }
     }

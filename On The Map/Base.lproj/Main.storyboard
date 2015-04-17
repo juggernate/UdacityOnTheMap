@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="CkQ-Mz-dTS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="CkQ-Mz-dTS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -17,8 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="0E0-oy-QWo">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="0E0-oy-QWo">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -30,6 +30,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Students: On the Map" id="lXI-VK-1uK">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="et4-Oz-aeo">
+                            <connections>
+                                <action selector="logout:" destination="BYZ-38-t0r" id="yGJ-SM-Cht"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="bBU-j9-0sf">
                             <connections>
                                 <action selector="updateStudentList:" destination="BYZ-38-t0r" id="miM-ws-PuT"/>
@@ -102,7 +107,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="login:" destination="CkQ-Mz-dTS" eventType="touchUpInside" id="YKl-zS-ciK"/>
+                                            <action selector="login" destination="CkQ-Mz-dTS" eventType="touchUpInside" id="z9O-Kt-ISG"/>
                                         </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Udacity" translatesAutoresizingMaskIntoConstraints="NO" id="LtV-xF-PVb">
@@ -226,9 +231,14 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Students: In the List" id="kku-Om-Qkt">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="WPk-pE-3RH">
+                            <connections>
+                                <action selector="logout" destination="w3B-8k-J5L" id="p80-2F-Gw9"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="8HI-HT-vUo">
                             <connections>
-                                <action selector="updateStudentList:" destination="w3B-8k-J5L" id="iff-D3-d7M"/>
+                                <action selector="updateStudenList" destination="w3B-8k-J5L" id="6vO-hB-vcS"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -281,9 +291,6 @@
                                     <constraint firstAttribute="width" secondItem="4lB-6b-HK9" secondAttribute="width" constant="20" id="sC7-QA-Kc1"/>
                                 </constraints>
                             </view>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="QHm-4y-Yfe">
-                                <rect key="frame" x="281" y="282" width="37" height="37"/>
-                            </activityIndicatorView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jWG-li-zQx" userLabel="LocateButtonGrp">
                                 <rect key="frame" x="0.0" y="300" width="600" height="300"/>
                                 <subviews>
@@ -301,12 +308,17 @@
                                         <rect key="frame" x="284" y="63" width="32" height="32"/>
                                         <color key="tintColor" red="0.19110564887523651" green="0.93472045660018921" blue="0.4424225389957428" alpha="1" colorSpace="calibratedRGB"/>
                                     </imageView>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="QHm-4y-Yfe">
+                                        <rect key="frame" x="281" y="115" width="37" height="37"/>
+                                    </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.81582736968994141" green="0.91624003648757935" blue="0.85692429542541504" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="m7h-5j-EBx" firstAttribute="top" secondItem="zg7-XC-A80" secondAttribute="bottom" constant="8" id="90l-RX-Ngx"/>
+                                    <constraint firstItem="QHm-4y-Yfe" firstAttribute="top" secondItem="m7h-5j-EBx" secondAttribute="bottom" constant="20" id="Xkf-0d-NCP"/>
                                     <constraint firstAttribute="centerX" secondItem="m7h-5j-EBx" secondAttribute="centerX" id="Z8f-Xj-ueL"/>
                                     <constraint firstItem="zg7-XC-A80" firstAttribute="top" secondItem="jWG-li-zQx" secondAttribute="top" constant="10" id="ZZ4-pv-Hqd"/>
+                                    <constraint firstAttribute="centerX" secondItem="QHm-4y-Yfe" secondAttribute="centerX" constant="0.5" id="gud-PP-BPZ"/>
                                     <constraint firstAttribute="centerX" secondItem="zg7-XC-A80" secondAttribute="centerX" constant="-0.5" id="kWj-ZX-mqg"/>
                                     <constraint firstAttribute="height" constant="300" id="lYy-HD-4F8"/>
                                 </constraints>
@@ -345,11 +357,6 @@
                             <constraint firstItem="YYE-8z-krF" firstAttribute="width" secondItem="GWr-6e-ili" secondAttribute="width" id="vrn-eR-eRf"/>
                             <constraint firstItem="tIf-RB-5kv" firstAttribute="top" secondItem="5dU-9T-MKZ" secondAttribute="bottom" id="yzY-Ha-kqF"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="QHm-4y-Yfe"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
                         <outlet property="bottomHeight" destination="lYy-HD-4F8" id="eCX-W3-ewn"/>

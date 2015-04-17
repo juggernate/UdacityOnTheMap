@@ -35,11 +35,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     //        self.configureUI()
   }
   
-  @IBAction func login(sender: AnyObject) {
-    login()
-  }
+//  @IBAction func login(sender: AnyObject) {
+//    login()
+//  }
   
-  func login() {
+  @IBAction func login() {
     
     spinner.startAnimating()
     
@@ -91,7 +91,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                   lastname = jsn["user"]["last_name"].string {
                     User.sharedInstance.info.firstName = firstname
                     User.sharedInstance.info.lastName = lastname
+                    
+                    self.spinner.stopAnimating()
                     self.performSegueWithIdentifier("SignInComplete", sender: self)
+                    self.userField.text = nil
+                    self.passwordField.text = nil
+                    
                 }
               }
             }
