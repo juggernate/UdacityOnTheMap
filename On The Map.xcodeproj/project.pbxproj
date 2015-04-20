@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B576715ED0A5D61B92008F84 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE3C73ABA9DCA3D7EDA49D36 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D8037DBD1AD7F1AA00278BF9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8037DBC1AD7F1AA00278BF9 /* User.swift */; };
+		D87B2CA81AE5355200B9F8F5 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87B2CA71AE5355200B9F8F5 /* Router.swift */; };
 		D88D43FB1AD6D68C00B5A190 /* MapTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88D43FA1AD6D68C00B5A190 /* MapTabViewController.swift */; };
 		D8A3F1E21ADD0C45006B11EE /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A3F1E11ADD0C45006B11EE /* Student.swift */; };
 		D8A3F1E41ADD0C9C006B11EE /* StudentsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A3F1E31ADD0C9C006B11EE /* StudentsManager.swift */; };
@@ -39,6 +40,7 @@
 		C00FDF9571EDAE7BF24AAB2D /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		CBFD279BB2E471424A5FCE4F /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D8037DBC1AD7F1AA00278BF9 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		D87B2CA71AE5355200B9F8F5 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		D88D43FA1AD6D68C00B5A190 /* MapTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapTabViewController.swift; sourceTree = "<group>"; };
 		D8A3F1E11ADD0C45006B11EE /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
 		D8A3F1E31ADD0C9C006B11EE /* StudentsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentsManager.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				D8B7A0D81AD625FB00AF53C7 /* UdacityClient.swift */,
+				D87B2CA71AE5355200B9F8F5 /* Router.swift */,
 				D8037DBC1AD7F1AA00278BF9 /* User.swift */,
 				D8A3F1E11ADD0C45006B11EE /* Student.swift */,
 				D8A3F1E31ADD0C9C006B11EE /* StudentsManager.swift */,
@@ -340,6 +343,7 @@
 				D8B7A0D91AD625FB00AF53C7 /* UdacityClient.swift in Sources */,
 				D8A3F1E21ADD0C45006B11EE /* Student.swift in Sources */,
 				D8A73C631ADAA609008DB418 /* WebViewController.swift in Sources */,
+				D87B2CA81AE5355200B9F8F5 /* Router.swift in Sources */,
 				D88D43FB1AD6D68C00B5A190 /* MapTabViewController.swift in Sources */,
 				D8A922061AD5FB6100A19213 /* LoginViewController.swift in Sources */,
 				D8CE26201AD6FAB600F23584 /* PostLocationViewController.swift in Sources */,

@@ -24,73 +24,33 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     passwordField.delegate = self
     
     /* TODO: Configure the UI */
-    //        self.configureUI()
+            self.configureUI()
   }
   
   @IBAction func login() {
     
     spinner.startAnimating()
-    
-    Alamofire.request(UdacityClient.Router.UdacityLogin(userField.text, passwordField.text))
-      .response() { (_, _, DATA, ERROR) in
-        
-        if let networkError = ERROR {
-          self.displayError(networkError.localizedDescription)
-          return
-        }
-        
-        if let data: AnyObject = DATA{
-          //strip the first 5 from data (security thing?)
-          let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
-          let jsn = JSON(data: newData)
-          
-          if let loginError = jsn["error"].string {
-            //TODO: strip "trails.Error 4xx: " if it exists in message for nicer presentation
-            let alert = UIAlertController(title: "Login Error:", message: loginError, preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .Default) { action in
-              self.spinner.stopAnimating()
-              })
-            self.presentViewController(alert, animated: true, completion: nil)
-          }
-          
-          if let accountID = jsn["account"]["key"].string {
-            User.sharedInstance.info.uniqueKey = accountID
-            
-            Alamofire.request(UdacityClient.Router.UdacityInfo(accountID)).response() {(_, _, DATA, ERROR) in
-              if let networkError = ERROR {
-                self.displayError(networkError.localizedDescription)
-                return
-              }
-              
-              if let data: AnyObject = DATA{
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
-                let jsn = JSON(data: newData)
-                
-                if let loginError = jsn["error"].string {
-                  //TODO: strip "trails.Error 4xx: " if it exists in message
-                  let alert = UIAlertController(title: "Login User Error:", message: loginError, preferredStyle: .Alert)
-                  alert.addAction(UIAlertAction(title: "OK", style: .Default) { action in
-                    self.spinner.stopAnimating()
-                    })
-                  self.presentViewController(alert, animated: true, completion: nil)
-                }
-                
-                if let firstname = jsn["user"]["first_name"].string,
-                  lastname = jsn["user"]["last_name"].string {
-                    User.sharedInstance.info.firstName = firstname
-                    User.sharedInstance.info.lastName = lastname
-                    
-                    self.spinner.stopAnimating()
-                    self.performSegueWithIdentifier("SignInComplete", sender: self)
-                    self.userField.text = nil
-                    self.passwordField.text = nil
-                    
-                }
-              }
-            }
-          }
-        }
+
+    UdacityClient.sharedInstance.login(userField.text, password: passwordField.text) {
+      (success, errorString) in
+
+      self.spinner.stopAnimating()
+
+      if let error = errorString {
+        //display error popup
+        self.displayError(error)
+        return
+      }
+
+      self.completeLogin()
+
     }
+  }
+
+  func completeLogin() {
+    performSegueWithIdentifier("SignInComplete", sender: self)
+    userField.text = nil
+    passwordField.text = nil
   }
   
   
@@ -131,6 +91,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   }
   
   func textFieldShouldReturn(textField: UITextField) -> Bool {
+    
     if textField == userField {
       passwordField.becomeFirstResponder()
       return true
@@ -142,14 +103,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   
   func configureUI() {
     /* Configure background gradient */
-    //        self.view.backgroundColor = UIColor.clearColor()
-    //        let colorTop = UIColor(red: 0.345, green: 0.839, blue: 0.988, alpha: 1.0).CGColor
-    //        let colorBottom = UIColor(red: 0.023, green: 0.569, blue: 0.910, alpha: 1.0).CGColor
-    //        var backgroundGradient = CAGradientLayer()
-    //        backgroundGradient.colors = [colorTop, colorBottom]
-    //        backgroundGradient.locations = [0.0, 1.0]
-    //        backgroundGradient.frame = view.frame
-    //        self.view.layer.insertSublayer(backgroundGradient, atIndex: 0)
+            self.view.backgroundColor = UIColor.clearColor()
+            let colorTop = UIColor(red: 0.345, green: 0.839, blue: 0.988, alpha: 1.0).CGColor
+            let colorBottom = UIColor(red: 0.023, green: 0.569, blue: 0.910, alpha: 1.0).CGColor
+            var backgroundGradient = CAGradientLayer()
+            backgroundGradient.colors = [colorTop, colorBottom]
+            backgroundGradient.locations = [0.0, 1.0]
+            backgroundGradient.frame = view.frame
+            self.view.layer.insertSublayer(backgroundGradient, atIndex: 0)
     
     /* Configure header text label */
     //        headerTextLabel.font = UIFont(name: "AvenirNext-Medium", size: 24.0)
@@ -160,11 +121,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     //        debugTextLabel.textColor = UIColor.whiteColor()
     
     // Configure login button
-    //        loginButton.titleLabel?.font = UIFont(name: "AvenirNext-Medium", size: 17.0)
-    //        loginButton.highlightedBackingColor = UIColor(red: 0.0, green: 0.298, blue: 0.686, alpha:1.0)
-    //        loginButton.backingColor = UIColor(red: 0.0, green:0.502, blue:0.839, alpha: 1.0)
-    //        loginButton.backgroundColor = UIColor(red: 0.0, green:0.502, blue:0.839, alpha: 1.0)
-    //        loginButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            loginButton.titleLabel?.font = UIFont(name: "AvenirNext-Medium", size: 17.0)
+//            loginButton.highlightedBackingColor = UIColor(red: 0.0, green: 0.298, blue: 0.686, alpha:1.0)
+//            loginButton.backingColor = UIColor(red: 0.0, green:0.502, blue:0.839, alpha: 1.0)
+            loginButton.backgroundColor = UIColor(red: 0.0, green:0.502, blue:0.839, alpha: 1.0)
+            loginButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
   }
 }
 

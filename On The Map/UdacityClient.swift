@@ -11,108 +11,118 @@ import Alamofire
 import SwiftyJSON
 
 class UdacityClient: NSObject {
+
+  static let sharedInstance = UdacityClient()
+
+  //TODO: move the requests from login view controller here, take a completion handler to call back to login
+  var token: String?
+  var tokenDate: NSDate?
+  let tokenThresholdInDays = 30
   
-  enum Router: URLRequestConvertible {
-    
-    case UdacityLogin(String, String)
-    case UdacityInfo(String)
-    case FacebookLogin(String)
-    case Parse
-    case ParsePost(Student)
-    case ParseQuery(String)
-    case ParsePut(String, Student)
-    
-    var URLRequest: NSURLRequest {
-      switch self {
-        
-      case .UdacityLogin(let username, let password):
-        let params = ["udacity":["username": username, "password": password]]
-        var JSONSerializationError: NSError? = nil
-        
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/session")!)
-        request.HTTPMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &JSONSerializationError)
-        return request
-        
-      case .FacebookLogin(let access_token):
-        let params = ["facebook_mobile":["access_token": access_token]]
-        var JSONSerializationError: NSError? = nil
-        
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/session")!)
-        request.HTTPMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &JSONSerializationError)
-        return request
-        
-      case .UdacityInfo(let userID):
-        return NSURLRequest(URL: NSURL(string: "https://www.udacity.com/api/users/\(userID)")!)
-        
-      case .Parse:
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
-        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
-        return request
-        
-      case .ParseQuery(let uniqeKey):
-        let params = ["where":["uniqueKey": uniqeKey]]
-        let mrequest = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
-        mrequest.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        mrequest.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
-        
-        var request = NSURLRequest()
-        //manually encode parameters?
-        let encoding = Alamofire.ParameterEncoding.URL
-        (request, _) = encoding.encode(mrequest, parameters: params)
-        return request
-        
-      case .ParsePut(let objectId, let student):
-        let params = [
-          "uniqueKey": student.uniqueKey,
-          "firstName": student.firstName,
-          "lastName": student.lastName,
-          "mediaURL": student.mediaURL,
-          "longitude": student.longitude,
-          "latitude": student.latitude,
-          "mapString": student.mapString
-        ]
-        var JSONSerializationError: NSError? = nil
-        
-        let urlString = "https://api.parse.com/1/classes/StudentLocation/\(objectId)"
-        let url = NSURL(string: urlString)
-        let request = NSMutableURLRequest(URL: url!)
-        request.HTTPMethod = "PUT"
-        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &JSONSerializationError)
-        return request
-        
-      case .ParsePost(let student):
-        let params = [
-          "uniqueKey": student.uniqueKey,
-          "firstName": student.firstName,
-          "lastName": student.lastName,
-          "mediaURL": student.mediaURL,
-          "longitude": student.longitude,
-          "latitude": student.latitude,
-          "mapString": student.mapString
-        ]
-        var JSONSerializationError: NSError? = nil
-        
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://api.parse.com/1/classes/StudentLocation")!)
-        request.HTTPMethod = "POST"
-        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &JSONSerializationError)
-        return request
-        
+  //if valid token within date just return success
+  //TODO: invalidate token after certain conditions (date, system reset?)
+  //TODO: logout should invalidate token
+  
+  //MARK: - External Callers
+  
+  func login(user: String, password: String, completionHandler: (success: Bool, errorString: String?) -> Void ) {
+    //getSession
+    getSession(user, password: password) { (uniqueKey, errorString) in
+      
+      if let error = errorString {
+        completionHandler(success: false, errorString: error)
+        return
       }
+      
+      if let key = uniqueKey {
+        self.getUserData(key) { (success, errorString) in
+
+          if let error = errorString {
+            completionHandler(success: false, errorString: error)
+            return
+          }
+
+          if success {
+            completionHandler(success: true, errorString: nil)
+            return
+          }
+        }
+      }
+      //get here unspecified error?
+    }
+    
+  }
+  //MARK: - Request Handlers
+  func getSession(user: String, password: String, completionHandler: (uniqeKey: String?, errorString: String?) -> Void ) {
+    
+    Alamofire.request(Router.UdacityLogin(user, password)).response() {
+      (_, _, DATA, ERROR) in
+      
+      if let networkError = ERROR {
+        let errorString = "Network Error: \(networkError.localizedDescription)"
+        completionHandler(uniqeKey: nil, errorString: errorString)
+        return
+      }
+      
+      if let data = DATA as? NSData {
+        let json = JSON(data: self.stripUdacityData(data))
+        
+        if let responseError = json["error"].string {
+          //TODO: strip "trails.Error 4xx"?
+          completionHandler(uniqeKey: nil, errorString: "Login Error: \(responseError)")
+          return
+        }
+        
+        if let key = json["account"]["key"].string {
+          User.sharedInstance.info.uniqueKey = key
+          completionHandler(uniqeKey: key, errorString: nil)
+          return
+        }
+      }
+      completionHandler(uniqeKey: nil, errorString: "Data Error: Unique Key Unavailable")
     }
   }
+  
+  func getUserData(uniqeKey: String, completionHandler: (success: Bool, errorString: String?) -> Void ) {
+
+    Alamofire.request(Router.UdacityInfo(uniqeKey)).response() {
+      (_, _, DATA, ERROR) in
+
+      if let networkError = ERROR {
+        let errorString = "Network Error: \(networkError.localizedDescription)"
+        completionHandler(success: false, errorString: errorString)
+        return
+      }
+
+      if let data = DATA as? NSData {
+        let json = JSON(data: self.stripUdacityData(data))
+
+        if let responseError = json["error"].string {
+          //TODO: strip "trails.Error 4xx"?
+          completionHandler(success: false, errorString: "Login Error: \(responseError)")
+          return
+        }
+
+        if let firstname = json["user"]["first_name"].string,
+        lastname = json["user"]["last_name"].string {
+          User.sharedInstance.info.firstName = firstname
+          User.sharedInstance.info.lastName = lastname
+          completionHandler(success: true, errorString: nil)
+          return
+        }
+      }
+      completionHandler(success: false, errorString: "Data Error: User Info Unavailable")
+    }
+  }
+
+  //MARK: - Data handlers
+  func stripUdacityData(data: NSData, withRange range: Int = 5) -> NSData {
+    return data.subdataWithRange(NSMakeRange(range, data.length - range))
+  }
+
+  //MARK: - Logout & Session Cleanup
+  func invalidateToken() {
+
+  }
+  
 }
