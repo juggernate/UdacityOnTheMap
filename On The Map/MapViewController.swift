@@ -30,12 +30,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
   @IBAction func logout() {
     self.dismissViewControllerAnimated(true, completion: nil)
   }
+
   
-  @IBAction func updateStudentList(sender: UIBarButtonItem) {
-    updateStudenList()
-  }
-  
-  func updateStudenList() {
+  @IBAction func updateStudenList() {
     StudentsManager.sharedInstance.updateStudentsList{ students in
       self.makeAnnotations(students)
     }
@@ -80,13 +77,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
       pinView!.canShowCallout = true
       pinView!.pinColor = .Purple
       pinView!.leftCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIButton//
+
     }
     else {
       pinView!.annotation = annotation
     }
     
     pinView?.image = pinImage
-    
+    //TODO: align callout / or align image to callout?
+
     return pinView
   }
   

@@ -3,8 +3,6 @@
 //
 
 import UIKit
-import Alamofire
-import SwiftyJSON
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
   
@@ -13,6 +11,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   @IBOutlet weak var signupButton: UIButton!
   @IBOutlet weak var userField: UITextField!
   @IBOutlet weak var passwordField: UITextField!
+
+  //TODO: add properties for configuration colors etc with @IBDesignable
   
   // MARK: - Lifecycle
   
@@ -24,7 +24,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     passwordField.delegate = self
     
     /* TODO: Configure the UI */
-            self.configureUI()
+    self.configureUI()
   }
   
   @IBAction func login() {
@@ -32,18 +32,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     spinner.startAnimating()
 
     UdacityClient.sharedInstance.login(userField.text, password: passwordField.text) {
-      (success, errorString) in
-
       self.spinner.stopAnimating()
 
-      if let error = errorString {
-        //display error popup
+      if let error = $0 {
         self.displayError(error)
         return
       }
 
       self.completeLogin()
-
     }
   }
 
@@ -69,25 +65,20 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     let webNavVC = UINavigationController()
     webNavVC.pushViewController(webVC, animated: false)
     
-    dispatch_async(dispatch_get_main_queue(), {
-      self.presentViewController(webNavVC, animated: true, completion: nil)
-    })
-    
+    self.presentViewController(webNavVC, animated: true, completion: nil)
+
   }
   
   func displayError(errorString: String?) {
-    dispatch_async(dispatch_get_main_queue(), {
-      
+
       if let errorString = errorString {
-        
-        let alertController = UIAlertController(title: "Network Error", message: errorString, preferredStyle: .Alert)
+
+        let alertController = UIAlertController(title: nil, message: errorString, preferredStyle: .Alert)
         let OKAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
         alertController.addAction(OKAction)
-        self.presentViewController(alertController, animated: true) {
-          self.spinner.stopAnimating()
-        }
+        self.presentViewController(alertController, animated: true, completion: nil)
+
       }
-    })
   }
   
   func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -103,14 +94,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   
   func configureUI() {
     /* Configure background gradient */
-            self.view.backgroundColor = UIColor.clearColor()
-            let colorTop = UIColor(red: 0.345, green: 0.839, blue: 0.988, alpha: 1.0).CGColor
-            let colorBottom = UIColor(red: 0.023, green: 0.569, blue: 0.910, alpha: 1.0).CGColor
-            var backgroundGradient = CAGradientLayer()
-            backgroundGradient.colors = [colorTop, colorBottom]
-            backgroundGradient.locations = [0.0, 1.0]
-            backgroundGradient.frame = view.frame
-            self.view.layer.insertSublayer(backgroundGradient, atIndex: 0)
+    self.view.backgroundColor = UIColor.clearColor()
+    let colorTop = UIColor(red: 0.345, green: 0.839, blue: 0.988, alpha: 1.0).CGColor
+    let colorBottom = UIColor(red: 0.023, green: 0.569, blue: 0.910, alpha: 1.0).CGColor
+    var backgroundGradient = CAGradientLayer()
+    backgroundGradient.colors = [colorTop, colorBottom]
+    backgroundGradient.locations = [0.0, 1.0]
+    backgroundGradient.frame = view.frame
+    self.view.layer.insertSublayer(backgroundGradient, atIndex: 0)
     
     /* Configure header text label */
     //        headerTextLabel.font = UIFont(name: "AvenirNext-Medium", size: 24.0)
@@ -121,11 +112,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     //        debugTextLabel.textColor = UIColor.whiteColor()
     
     // Configure login button
-            loginButton.titleLabel?.font = UIFont(name: "AvenirNext-Medium", size: 17.0)
+    loginButton.titleLabel?.font = UIFont(name: "AvenirNext-Medium", size: 17.0)
 //            loginButton.highlightedBackingColor = UIColor(red: 0.0, green: 0.298, blue: 0.686, alpha:1.0)
 //            loginButton.backingColor = UIColor(red: 0.0, green:0.502, blue:0.839, alpha: 1.0)
-            loginButton.backgroundColor = UIColor(red: 0.0, green:0.502, blue:0.839, alpha: 1.0)
-            loginButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-  }
+    loginButton.backgroundColor = UIColor(red: 0.0, green:0.502, blue:0.839, alpha: 1.0)
+    loginButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+}
 }
 

@@ -10,6 +10,8 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
+//TODO: Convert this to realm DB
+
 class StudentsManager: NSObject {
   //singleton in Swift 1.2
   static let sharedInstance = StudentsManager()
@@ -47,7 +49,7 @@ class StudentsManager: NSObject {
       (_, _, DATA, ERROR) in
   
       if let networkError = ERROR {
-        //TODO: add display error
+        //TODO: send errorString to completionHandler
         return
       }
       

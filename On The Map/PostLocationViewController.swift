@@ -9,8 +9,7 @@
 import UIKit
 import CoreLocation
 import MapKit
-import Alamofire
-import SwiftyJSON
+
 
 class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFieldDelegate {
   
@@ -26,7 +25,7 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
   @IBOutlet weak var topLabelGrp: UIView!
   @IBOutlet weak var shareLocation: UIBarButtonItem!
   
-  
+  var user: Student!
   var placemark: CLPlacemark!
   
   let pinImage = UIImage(named: "PinIcon")
@@ -35,21 +34,23 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    self.user = UdacityClient.sharedInstance.user
+    
     mapView.delegate = self
     locationEntryField.delegate = self
 
     self.bottomHeight.constant = self.view.bounds.height * 0.8
     
     //fake debug data when bypassing login
-    if User.sharedInstance.info.uniqueKey == "" {
-      User.sharedInstance.info.firstName = "Gruncle"
-      User.sharedInstance.info.lastName = "Carbuncle"
-      User.sharedInstance.info.mapString = "DingleBerry, DongKong"
-      User.sharedInstance.info.mediaURL = "http://iboopedya.ytmnd.com/"
-      User.sharedInstance.info.uniqueKey = "4815162342"
+    if user.uniqueKey == "" {
+      user.firstName = "Gruncle"
+      user.lastName = "Carbuncle"
+      user.mapString = "DingleBerry, DongKong"
+      user.mediaURL = "http://iboopedya.ytmnd.com/"
+      user.uniqueKey = "4815162342"
     }
     
-    whereLabel.text = "Where art thou \(User.sharedInstance.info.firstName)?"
+    whereLabel.text = "Where art thou \(user.firstName)?"
     shareLocation.enabled = false
     topLabelGrp.alpha = 1
   }
@@ -117,9 +118,8 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
     pinView?.image = pinImage
     return pinView
   }
-  
-  // This delegate method is implemented to respond to taps. It opens the system browser
-  // to the URL specified in the annotationViews subtitle property.
+
+
   func mapView(mapView: MKMapView!, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
 
     if control == annotationView.leftCalloutAccessoryView {
@@ -134,20 +134,21 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
     self.dismissViewControllerAnimated(true, completion: nil)
   }
   
-  @IBAction func postLocation(sender: UIBarButtonItem){
-    postLocation()
+  func completePost() {
+    self.dismissViewControllerAnimated(true, completion: nil)
   }
+
   
   @IBAction func postLocation() {
     //first validate URL
     let candidateURL = NSURL(string: self.locationEntryField.text)
+
     if let url = candidateURL,
     scheme = candidateURL?.scheme,
     host = candidateURL?.host,
     urlString = candidateURL?.absoluteString {
-      User.sharedInstance.info.mediaURL = urlString
+      user.mediaURL = urlString
     }
-    
     else {
       let alert = UIAlertController(title: "Invalid URL:", message: self.locationEntryField.text, preferredStyle: .Alert)
       alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
@@ -155,53 +156,17 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
       return
     }
     
-    Alamofire.request(UdacityClient.Router.ParseQuery(User.sharedInstance.info.uniqueKey))
-    .responseJSON { (_, res, data, error) in
-      //THIS COULD RETURN MULTIPLES IF THE STUDENT POSTED WITHOUT CHECKING
-      if let networkerror = error {
-        let alert = UIAlertController(title: "Network Error:", message: networkerror.localizedDescription, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+    spinner.startAnimating()
+    UdacityClient.sharedInstance.postLocationToParse(user){ (errorString) in
+      
+      //spinner is part of view that gets animated off-screen
+      self.spinner.stopAnimating()
+
+      if let error = errorString {
+        self.displayError(error)
         return
       }
-      
-      let results = JSON(data!)["results"]
-      if results.count > 0 {
-        //get the first record and overwrite it
-        if let objectId = results[0]["objectId"].string {
-
-          Alamofire.request(UdacityClient.Router.ParsePut(objectId ,User.sharedInstance.info))
-          .responseJSON { (_, res, data, error) in
-            
-            if let networkerror = error {
-              let alert = UIAlertController(title: "Network Error:", message: networkerror.localizedDescription, preferredStyle: .Alert)
-              alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-              self.presentViewController(alert, animated: true, completion: nil)
-              return // from Put closure
-            }
-            
-//            let json = JSON(data!) // don't need this unless you process it somehow
-            self.dismissViewControllerAnimated(true, completion: nil)
-            
-          }
-          return // from top request closure
-        }
-      }
-        
-//      println("No records found. POST here")
-      Alamofire.request(UdacityClient.Router.ParsePost(User.sharedInstance.info))
-      .responseJSON { (_, res, data, error) in
-
-        if let networkerror = error {
-          let alert = UIAlertController(title: "Network Error:", message: networkerror.localizedDescription, preferredStyle: .Alert)
-          alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-          self.presentViewController(alert, animated: true, completion: nil)
-          return
-        }
-//        let json = JSON(data!) // don't need this unless you process it somehow
-        self.dismissViewControllerAnimated(true, completion: nil)
-          
-      }
+      self.completePost()
     }
   }
   
@@ -246,9 +211,9 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
         // Create a new variable to store the instance of PlayerTableViewController
         //                let destinationVC = segue.destinationViewController as PlayerTableViewController
         //                destinationVC.programVar = newProgramVar
-        User.sharedInstance.info.mapString = addressString
-        User.sharedInstance.info.latitude = location.coordinate.latitude
-        User.sharedInstance.info.longitude = location.coordinate.longitude
+        self.user.mapString = addressString
+        self.user.latitude = location.coordinate.latitude
+        self.user.longitude = location.coordinate.longitude
         
         self.animateTopLayers()
         
@@ -256,15 +221,15 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
         
         var annotations = [MKPointAnnotation]() //Todo: array for showing other students with different icon at same time?
         
-        let lat = CLLocationDegrees(User.sharedInstance.info.latitude)
-        let long = CLLocationDegrees(User.sharedInstance.info.longitude)
+        let lat = CLLocationDegrees(self.user.latitude)
+        let long = CLLocationDegrees(self.user.longitude)
         
         // The lat and long are used to create a CLLocationCoordinates2D instance.
         let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
         
         var annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
-        annotation.title = "\(User.sharedInstance.info.firstName) \(User.sharedInstance.info.lastName)"
+        annotation.title = "\(self.user.firstName) \(self.user.lastName)"
         
         annotations.append(annotation)
         
@@ -276,6 +241,18 @@ class PostLocationViewController: UIViewController, MKMapViewDelegate, UITextFie
         self.shareLocation.enabled = true
         
       }
+    }
+  }
+  
+  func displayError(errorString: String?) {
+    
+    if let errorString = errorString {
+      
+      let alertController = UIAlertController(title: nil, message: errorString, preferredStyle: .Alert)
+      let OKAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+      alertController.addAction(OKAction)
+      self.presentViewController(alertController, animated: true, completion: nil)
+      
     }
   }
   

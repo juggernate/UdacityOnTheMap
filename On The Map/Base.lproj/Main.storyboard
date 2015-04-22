@@ -32,12 +32,12 @@
                     <navigationItem key="navigationItem" title="Students: On the Map" id="lXI-VK-1uK">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="et4-Oz-aeo">
                             <connections>
-                                <action selector="logout:" destination="BYZ-38-t0r" id="yGJ-SM-Cht"/>
+                                <action selector="logout" destination="BYZ-38-t0r" id="pMj-lW-XCY"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="bBU-j9-0sf">
                             <connections>
-                                <action selector="updateStudentList:" destination="BYZ-38-t0r" id="miM-ws-PuT"/>
+                                <action selector="updateStudenList" destination="BYZ-38-t0r" id="Xb1-N5-5lp"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -308,21 +308,19 @@
                                         <rect key="frame" x="284" y="63" width="32" height="32"/>
                                         <color key="tintColor" red="0.19110564887523651" green="0.93472045660018921" blue="0.4424225389957428" alpha="1" colorSpace="calibratedRGB"/>
                                     </imageView>
-                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="QHm-4y-Yfe">
-                                        <rect key="frame" x="281" y="115" width="37" height="37"/>
-                                    </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.81582736968994141" green="0.91624003648757935" blue="0.85692429542541504" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="m7h-5j-EBx" firstAttribute="top" secondItem="zg7-XC-A80" secondAttribute="bottom" constant="8" id="90l-RX-Ngx"/>
-                                    <constraint firstItem="QHm-4y-Yfe" firstAttribute="top" secondItem="m7h-5j-EBx" secondAttribute="bottom" constant="20" id="Xkf-0d-NCP"/>
                                     <constraint firstAttribute="centerX" secondItem="m7h-5j-EBx" secondAttribute="centerX" id="Z8f-Xj-ueL"/>
                                     <constraint firstItem="zg7-XC-A80" firstAttribute="top" secondItem="jWG-li-zQx" secondAttribute="top" constant="10" id="ZZ4-pv-Hqd"/>
-                                    <constraint firstAttribute="centerX" secondItem="QHm-4y-Yfe" secondAttribute="centerX" constant="0.5" id="gud-PP-BPZ"/>
                                     <constraint firstAttribute="centerX" secondItem="zg7-XC-A80" secondAttribute="centerX" constant="-0.5" id="kWj-ZX-mqg"/>
                                     <constraint firstAttribute="height" constant="300" id="lYy-HD-4F8"/>
                                 </constraints>
                             </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="QHm-4y-Yfe">
+                                <rect key="frame" x="281" y="282" width="37" height="37"/>
+                            </activityIndicatorView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5dU-9T-MKZ">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
@@ -334,7 +332,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="C9c-oH-u7Y"/>
                                     <barButtonItem systemItem="action" id="uje-Zb-0AL">
                                         <connections>
-                                            <action selector="postLocation:" destination="23l-Wz-vba" id="KoX-2L-JGw"/>
+                                            <action selector="postLocation" destination="23l-Wz-vba" id="ABu-yM-jbp"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -342,6 +340,7 @@
                         </subviews>
                         <color key="backgroundColor" red="0.91633546352386475" green="0.5154685378074646" blue="0.76038444042205811" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstAttribute="centerY" secondItem="QHm-4y-Yfe" secondAttribute="centerY" constant="-0.5" id="03l-zG-3D3"/>
                             <constraint firstItem="YYE-8z-krF" firstAttribute="top" secondItem="ub4-Ei-ZX7" secondAttribute="bottom" constant="-20" id="0cp-sQ-Flt"/>
                             <constraint firstItem="YYE-8z-krF" firstAttribute="height" secondItem="GWr-6e-ili" secondAttribute="height" multiplier="0.2" id="30x-vQ-tYn"/>
                             <constraint firstAttribute="centerX" secondItem="jWG-li-zQx" secondAttribute="centerX" id="8Ju-1E-bbv"/>
@@ -350,6 +349,7 @@
                             <constraint firstAttribute="centerX" secondItem="5dU-9T-MKZ" secondAttribute="centerX" id="QOx-IN-zes"/>
                             <constraint firstAttribute="centerX" secondItem="YYE-8z-krF" secondAttribute="centerX" id="UDl-iQ-iVO"/>
                             <constraint firstItem="vcb-67-YSs" firstAttribute="height" secondItem="GWr-6e-ili" secondAttribute="height" id="Yxy-RH-BtX"/>
+                            <constraint firstAttribute="centerX" secondItem="QHm-4y-Yfe" secondAttribute="centerX" constant="0.5" id="hc4-TG-KY6"/>
                             <constraint firstAttribute="centerX" secondItem="vcb-67-YSs" secondAttribute="centerX" id="id5-el-D5e"/>
                             <constraint firstItem="tIf-RB-5kv" firstAttribute="top" secondItem="jWG-li-zQx" secondAttribute="bottom" id="nlW-sN-fxh"/>
                             <constraint firstAttribute="width" secondItem="5dU-9T-MKZ" secondAttribute="width" id="ucD-Hw-hls"/>

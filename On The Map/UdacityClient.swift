@@ -13,107 +13,73 @@ import SwiftyJSON
 class UdacityClient: NSObject {
 
   static let sharedInstance = UdacityClient()
+  
+  var user = Student()
 
-  //TODO: move the requests from login view controller here, take a completion handler to call back to login
   var token: String?
   var tokenDate: NSDate?
   let tokenThresholdInDays = 30
   
   //if valid token within date just return success
-  //TODO: invalidate token after certain conditions (date, system reset?)
+  //TODO: invalidate token after (date, system reset?)
   //TODO: logout should invalidate token
   
   //MARK: - External Callers
   
-  func login(user: String, password: String, completionHandler: (success: Bool, errorString: String?) -> Void ) {
+  func login(user: String, password: String, completionHandler: (errorString: String?) -> Void ) {
     //getSession
-    getSession(user, password: password) { (uniqueKey, errorString) in
+    getSession(user, password: password) { uniqueKey, errorString in
       
       if let error = errorString {
-        completionHandler(success: false, errorString: error)
+        completionHandler(errorString: error)
         return
       }
       
       if let key = uniqueKey {
-        self.getUserData(key) { (success, errorString) in
+        self.user.uniqueKey = key
+        self.getUserData(key) { json, errorString in
 
           if let error = errorString {
-            completionHandler(success: false, errorString: error)
+            completionHandler(errorString: error)
             return
           }
 
-          if success {
-            completionHandler(success: true, errorString: nil)
-            return
+          if let json = json {
+            //TODO: remake student with json constructor?
+            if let firstname = json["user"]["first_name"].string,
+            lastname = json["user"]["last_name"].string {
+              self.user.firstName = firstname
+              self.user.lastName = lastname
+              completionHandler(errorString: nil)
+              return
+            }
           }
+
+          completionHandler(errorString: "Error: Unable to create User from Data")
+
         }
       }
-      //get here unspecified error?
-    }
-    
-  }
-  //MARK: - Request Handlers
-  func getSession(user: String, password: String, completionHandler: (uniqeKey: String?, errorString: String?) -> Void ) {
-    
-    Alamofire.request(Router.UdacityLogin(user, password)).response() {
-      (_, _, DATA, ERROR) in
-      
-      if let networkError = ERROR {
-        let errorString = "Network Error: \(networkError.localizedDescription)"
-        completionHandler(uniqeKey: nil, errorString: errorString)
-        return
-      }
-      
-      if let data = DATA as? NSData {
-        let json = JSON(data: self.stripUdacityData(data))
-        
-        if let responseError = json["error"].string {
-          //TODO: strip "trails.Error 4xx"?
-          completionHandler(uniqeKey: nil, errorString: "Login Error: \(responseError)")
-          return
-        }
-        
-        if let key = json["account"]["key"].string {
-          User.sharedInstance.info.uniqueKey = key
-          completionHandler(uniqeKey: key, errorString: nil)
-          return
-        }
-      }
-      completionHandler(uniqeKey: nil, errorString: "Data Error: Unique Key Unavailable")
     }
   }
   
-  func getUserData(uniqeKey: String, completionHandler: (success: Bool, errorString: String?) -> Void ) {
-
-    Alamofire.request(Router.UdacityInfo(uniqeKey)).response() {
-      (_, _, DATA, ERROR) in
-
-      if let networkError = ERROR {
-        let errorString = "Network Error: \(networkError.localizedDescription)"
-        completionHandler(success: false, errorString: errorString)
+  func postLocationToParse(student: Student, completionHandler: (errorString: String?) -> Void ) {
+    
+    //first check for existing entry using user's uniqueKey
+    parseQuery(student.uniqueKey) { (objectId, errorString) in
+      
+      if let error = errorString {
+        completionHandler(errorString: error)
         return
       }
-
-      if let data = DATA as? NSData {
-        let json = JSON(data: self.stripUdacityData(data))
-
-        if let responseError = json["error"].string {
-          //TODO: strip "trails.Error 4xx"?
-          completionHandler(success: false, errorString: "Login Error: \(responseError)")
-          return
-        }
-
-        if let firstname = json["user"]["first_name"].string,
-        lastname = json["user"]["last_name"].string {
-          User.sharedInstance.info.firstName = firstname
-          User.sharedInstance.info.lastName = lastname
-          completionHandler(success: true, errorString: nil)
-          return
-        }
+      
+      if let entry = objectId {
+        self.parsePut(entry, student: student){completionHandler(errorString: $0)}
+        return
       }
-      completionHandler(success: false, errorString: "Data Error: User Info Unavailable")
+      
+      self.parsePost(student){completionHandler(errorString: $0)}
     }
-  }
+}
 
   //MARK: - Data handlers
   func stripUdacityData(data: NSData, withRange range: Int = 5) -> NSData {
