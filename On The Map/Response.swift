@@ -64,20 +64,13 @@ extension UdacityClient {
         }
 
         completionHandler(json: json, errorString: nil)
-//        if let firstname = json["user"]["first_name"].string,
-//        lastname = json["user"]["last_name"].string {
-//          User.sharedInstance.info.firstName = firstname
-//          User.sharedInstance.info.lastName = lastname
-//          completionHandler(json: json, errorString: nil)
-//          return
-//        }
+        return
       }
       completionHandler(json: nil, errorString: "Data Error: User Info Unavailable")
     }
   }
 
   //MARK: - Parse API Response Handlers
-  //TODO: refactor from PostLocationVC
   func parseQuery(uniqueKey: String, completionHandler: (objectId: String?, errorString: String?) -> Void ) {
 
     Alamofire.request(Router.ParseQuery(uniqueKey)).responseJSON { (_, _, DATA, ERROR) in

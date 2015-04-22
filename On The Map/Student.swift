@@ -9,7 +9,7 @@
 import Foundation
 import SwiftyJSON
 
-//JSON SAMPLE FROM PARSE
+//JSON sample FROM PARSE //is data from Udacity structured similarly?
 //{
 //"mediaURL" : "http:\/\/www.linkedin.com\/in\/jessicauelmen\/en",
 //"firstName" : "Jessica",

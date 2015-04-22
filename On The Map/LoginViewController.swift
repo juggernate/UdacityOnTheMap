@@ -44,6 +44,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   }
 
   func completeLogin() {
+    //TODO: animate fade out elements
     performSegueWithIdentifier("SignInComplete", sender: self)
     userField.text = nil
     passwordField.text = nil
@@ -70,14 +71,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   }
   
   func displayError(errorString: String?) {
-
+    
       if let errorString = errorString {
-
         let alertController = UIAlertController(title: nil, message: errorString, preferredStyle: .Alert)
         let OKAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
         alertController.addAction(OKAction)
         self.presentViewController(alertController, animated: true, completion: nil)
-
       }
   }
   
