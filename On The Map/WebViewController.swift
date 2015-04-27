@@ -9,35 +9,35 @@
 import UIKit
 
 class WebViewController: UIViewController, UIWebViewDelegate {
-
-    @IBOutlet weak var webView: UIWebView!
+  
+  @IBOutlet weak var webView: UIWebView!
+  
+  var urlRequest: NSURLRequest? = nil
+  var navTitle: String? = nil
+  
+  // MARK: - Lifecycle
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
     
-    var urlRequest: NSURLRequest? = nil
-    var navTitle: String? = nil
+    webView.delegate = self
     
-    // MARK: - Lifecycle
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        webView.delegate = self
-        
-        if navTitle != nil {
-            self.navigationItem.title = navTitle
-        }
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: "cancel")
+    if navTitle != nil {
+      self.navigationItem.title = navTitle
+      self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: "cancel")
     }
+  }
+  
+  override func viewWillAppear(animated: Bool) {
     
-    override func viewWillAppear(animated: Bool) {
-        
-        super.viewWillAppear(animated)
-        
-        if urlRequest != nil {
-            self.webView.loadRequest(urlRequest!)
-        }
+    super.viewWillAppear(animated)
+    
+    if urlRequest != nil {
+      self.webView.loadRequest(urlRequest!)
     }
-
-    func cancel() {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
+  }
+  
+  func cancel() {
+    self.dismissViewControllerAnimated(true, completion: nil)
+  }
 }

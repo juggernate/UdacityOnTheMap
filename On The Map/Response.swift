@@ -9,6 +9,29 @@ import SwiftyJSON
 
 extension UdacityClient {
 
+  func checkURL(request: NSURLRequest, completionHandler: (errorString: String?) -> Void) {
+    
+    //prep request first or pass string or url?
+    //pass acceptable range?
+    Alamofire.request(request)
+    .validate()
+    .response{(_, response, _, error) in
+      
+      var errorString: String? = nil
+      
+      if let networkError = error {
+        
+        errorString = "Network Error: \(networkError.localizedDescription)"
+        
+        //error AND status code -- TODO: better status code parsing
+        if let response = response{
+          errorString = "\(response.statusCode) Not Found: \(request.URL!)"
+        }
+      }
+      completionHandler(errorString: errorString)
+    }
+  }
+  
   //MARK: - Udacity API Response Handlers
   func getSession(user: String, password: String, completionHandler: (uniqeKey: String?, errorString: String?) -> Void ) {
 
@@ -71,6 +94,39 @@ extension UdacityClient {
   }
 
   //MARK: - Parse API Response Handlers
+  func updateStudentsList(completionHandler:(json:[JSON]?, errorString: String?)->Void) {
+    
+    Alamofire.request(UdacityClient.Router.Parse).responseJSON() {
+      (_, _, DATA, ERROR) in
+      
+      if let networkError = ERROR {
+        let errorString = "Network Error: \(networkError.localizedDescription)"
+        completionHandler(json: nil, errorString: errorString)
+        return
+      }
+      
+      let json = JSON(DATA!)
+      if let responseError = json["error"].string {
+        let errorString = "Response Error: \(responseError)"
+        completionHandler(json: nil, errorString: errorString)
+        return
+      }
+      
+      if let results = json["results"].array{
+        if results.count > 0 {
+          completionHandler(json: results, errorString: nil)
+          return
+        }
+        completionHandler(json: nil, errorString: "Data Error: No Students Found")
+        return
+      }
+      
+      completionHandler(json: nil, errorString: "Data Error: Students Info Unavailable")
+    }
+  }
+
+  
+  
   func parseQuery(uniqueKey: String, completionHandler: (objectId: String?, errorString: String?) -> Void ) {
 
     Alamofire.request(Router.ParseQuery(uniqueKey)).responseJSON { (_, _, DATA, ERROR) in
@@ -81,7 +137,6 @@ extension UdacityClient {
         return
       }
 
-      //check for response error?
       let json = JSON(DATA!)
       if let responseError = json["error"].string {
         let errorString = "Response Error: \(responseError)"

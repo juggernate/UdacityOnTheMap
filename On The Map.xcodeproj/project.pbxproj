@@ -24,6 +24,7 @@
 		D8CE26201AD6FAB600F23584 /* PostLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CE261F1AD6FAB600F23584 /* PostLocationViewController.swift */; };
 		D8EE2A681ADEC0F200C9CA91 /* StudentListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE2A671ADEC0F200C9CA91 /* StudentListViewController.swift */; };
 		D8F2C9311ACA1F6000B11B20 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */; };
+		D8F58EAD1AEAC4E1009E25E5 /* UITextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F58EAC1AEAC4E1009E25E5 /* UITextFieldExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		D8F0BA051ADC450C0001FA22 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		D8F0BA061ADC450C0001FA22 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		D8F2C9301ACA1F6000B11B20 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		D8F58EAC1AEAC4E1009E25E5 /* UITextFieldExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextFieldExtension.swift; sourceTree = "<group>"; };
 		DE3C73ABA9DCA3D7EDA49D36 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -156,6 +158,7 @@
 		D8B856C31AC98FBA00DB03C3 /* On The Map */ = {
 			isa = PBXGroup;
 			children = (
+				D8F58EAB1AEAC4AE009E25E5 /* View */,
 				D8A922071AD6249700A19213 /* Clients */,
 				D8A922041AD5F58F00A19213 /* Controllers */,
 				D8B856CA1AC98FBA00DB03C3 /* Main.storyboard */,
@@ -194,6 +197,14 @@
 				D8B856DB1AC98FBA00DB03C3 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D8F58EAB1AEAC4AE009E25E5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D8F58EAC1AEAC4E1009E25E5 /* UITextFieldExtension.swift */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -354,6 +365,7 @@
 				D88D43FB1AD6D68C00B5A190 /* MapTabViewController.swift in Sources */,
 				D8A922061AD5FB6100A19213 /* LoginViewController.swift in Sources */,
 				D8CE26201AD6FAB600F23584 /* PostLocationViewController.swift in Sources */,
+				D8F58EAD1AEAC4E1009E25E5 /* UITextFieldExtension.swift in Sources */,
 				D8A3F1E41ADD0C9C006B11EE /* StudentsManager.swift in Sources */,
 				D8F2C9311ACA1F6000B11B20 /* MapViewController.swift in Sources */,
 				D8B856C71AC98FBA00DB03C3 /* AppDelegate.swift in Sources */,

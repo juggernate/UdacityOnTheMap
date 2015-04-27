@@ -17,51 +17,34 @@ class StudentsManager: NSObject {
   static let sharedInstance = StudentsManager()
   var students = [Student]()
   
-  func updateStudentsList(results: [JSON], completionHandler:([Student])->Void) {
-    if results.count < 1 {
-      return
-    }
+  func updateStudents(completionHandler:(errorString: String?)->Void) {
     
-    self.students.removeAll(keepCapacity: true)
-    
-    //results appear to come back newest last for now, cheap (but not best) way to order newest first is reverse results
-    for studentJSON in results.reverse() {
-      
-      if let firstName = studentJSON["firstName"].string,
-        lastName = studentJSON["lastName"].string,
-        latitude = studentJSON["latitude"].double,
-        longitude = studentJSON["longitude"].double,
-        objectId = studentJSON["objectId"].string, //this is unique auto-generated from Parse for each entry
-        mediaURL = studentJSON["mediaURL"].string,
-        uniqueKey = studentJSON["uniqueKey"].string
-      {
-        let student = Student(json: studentJSON)
-        students.append(student)
-      }
-    }
-    
-    completionHandler(self.students)
-  }
-  
-  func updateStudentsList(completionHandler:([Student])->Void) {
-
-    Alamofire.request(UdacityClient.Router.Parse).responseJSON() {
-      (_, _, DATA, ERROR) in
-  
-      if let networkError = ERROR {
-        //TODO: send errorString to completionHandler
+    UdacityClient.sharedInstance.updateStudentsList { json, errorString in
+      if let error = errorString {
+        completionHandler(errorString: error)
         return
       }
       
-      if let data: AnyObject = DATA {
-        let json = JSON(data)
-        if let results = json["results"].array {
-          self.updateStudentsList(results, completionHandler:completionHandler)
+      if let results = json {
+        self.students.removeAll(keepCapacity: true)
+        //results appear to come back newest last for now, cheap (but not best) way to order newest first is reverse results
+        for studentJSON in results.reverse() {
+          
+          if let firstName = studentJSON["firstName"].string,
+            lastName = studentJSON["lastName"].string,
+            latitude = studentJSON["latitude"].double,
+            longitude = studentJSON["longitude"].double,
+            objectId = studentJSON["objectId"].string, //this is unique auto-generated from Parse for each entry
+            mediaURL = studentJSON["mediaURL"].string,
+            uniqueKey = studentJSON["uniqueKey"].string
+          {
+            self.students.append(Student(json: studentJSON))
+          }
         }
-      } else {
-        //TODO: display error?
       }
+      completionHandler(errorString: nil)
     }
+    
   }
   
 }

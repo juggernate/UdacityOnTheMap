@@ -57,7 +57,11 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
   }
   
   @IBAction func updateStudenList() {
-    StudentsManager.sharedInstance.updateStudentsList{ students in
+    StudentsManager.sharedInstance.updateStudents{ error in
+      if let error = error {
+        //display error?
+        return
+      }
       self.tableView.reloadData()
     }
   }

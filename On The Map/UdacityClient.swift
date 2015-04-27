@@ -79,7 +79,7 @@ class UdacityClient: NSObject {
       
       self.parsePost(student){completionHandler(errorString: $0)}
     }
-}
+  }
 
   //MARK: - Data handlers
   func stripUdacityData(data: NSData, withRange range: Int = 5) -> NSData {

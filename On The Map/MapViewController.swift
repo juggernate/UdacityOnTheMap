@@ -15,6 +15,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
   
   @IBOutlet weak var mapView: MKMapView!
   @IBOutlet weak var refreshButton: UIBarButtonItem!
+  @IBOutlet weak var spinner: UIActivityIndicatorView!
   
   let pinImage = UIImage(named: "PinIcon")
   
@@ -27,22 +28,39 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
   }
   
+  override func viewWillAppear(animated: Bool) {
+    updateStudenList()
+  }
+  
   @IBAction func logout() {
     self.dismissViewControllerAnimated(true, completion: nil)
   }
 
   
   @IBAction func updateStudenList() {
-    StudentsManager.sharedInstance.updateStudentsList{ students in
-      self.makeAnnotations(students)
+//    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+//    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+    refreshButton.enabled = false
+    spinner.startAnimating()
+    StudentsManager.sharedInstance.updateStudents(){ error in
+      self.spinner.stopAnimating()
+      self.refreshButton.enabled = true
+      if let error = error {
+        //display error
+        self.displayError(error)
+        return
+      }
+      self.makeAnnotations()
     }
+    
   }
   
-  func makeAnnotations(students: [Student]){
+  func makeAnnotations(){
     
     var annotations = [MKPointAnnotation]()
     
-    for student in students {
+    for student in StudentsManager.sharedInstance.students {
+      
       let lat = CLLocationDegrees(student.latitude)
       let long = CLLocationDegrees(student.longitude)
       
@@ -60,8 +78,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
       annotations.append(annotation)
       
     }
-    self.mapView.removeAnnotations(self.mapView.annotations)
-    self.mapView.addAnnotations(annotations)
+    
+    if annotations.count > 0 {
+      self.mapView.removeAnnotations(self.mapView.annotations)
+      self.mapView.addAnnotations(annotations)
+    }
+    
   }
   
   // MARK: - MKMapViewDelegate
@@ -89,6 +111,26 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     return pinView
   }
   
+  func presentWebView(request: NSURLRequest) {
+    let webVC = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
+    webVC.urlRequest = request
+    webVC.navTitle = "Student URL"
+    
+    let webNavVC = UINavigationController()
+    webNavVC.pushViewController(webVC, animated: false)
+    
+    self.presentViewController(webNavVC, animated: true, completion: nil)
+  }
+  
+  func displayError(errorString: String?) {
+    
+    if let errorString = errorString {
+      let alertController = UIAlertController(title: nil, message: errorString, preferredStyle: .Alert)
+      let OKAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+      alertController.addAction(OKAction)
+      self.presentViewController(alertController, animated: true, completion: nil)
+    }
+  }
   
   // This delegate method is implemented to respond to taps. It opens the system browser
   // to the URL specified in the annotationViews subtitle property.
@@ -97,15 +139,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     if control == annotationView.leftCalloutAccessoryView {
       
       if let urlString = annotationView.annotation.subtitle,
-        url = NSURL(string: urlString) {
-          let request = NSURLRequest(URL: url)
-          let webVC = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
-          webVC.urlRequest = request
-          webVC.navTitle = "Student URL"
-          //put it in a navController to use title/cancel
-          let webVCNav = UINavigationController()
-          webVCNav.pushViewController(webVC, animated: false)
-          self.presentViewController(webVCNav, animated: true, completion: nil)
+      url = NSURL(string: urlString) {
+        let request = NSURLRequest(URL: url)
+        
+        spinner.startAnimating()
+        UdacityClient.sharedInstance.checkURL(request) {
+          self.spinner.stopAnimating()
+          if let error = $0 {
+            self.displayError(error)
+          } else {
+            self.presentWebView(request)
+          }
+        }
       }
     }
   }
