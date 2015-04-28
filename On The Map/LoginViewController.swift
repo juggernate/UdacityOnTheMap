@@ -6,7 +6,7 @@ import UIKit
 import MapKit
 import Alamofire
 
-class LoginViewController: UIViewController, UITextFieldDelegate {
+class LoginViewController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate {
   
   @IBOutlet weak var loginButton: UIButton!
   @IBOutlet weak var spinner: UIActivityIndicatorView!
@@ -26,11 +26,19 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     userField.delegate = self
     passwordField.delegate = self
     
+    /* Configure tap recognizer */
+    var tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
+    tapRecognizer.numberOfTapsRequired = 1
+    tapRecognizer.delegate = self
+    self.view.addGestureRecognizer(tapRecognizer)
+    
     /* TODO: Configure the UI */
     self.configureUI()
   }
   
   @IBAction func login() {
+    
+    self.view.endEditing(true)
     
     spinner.startAnimating()
 
@@ -102,6 +110,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       return true
     }
     
+    //In password field and pressed return/go
     login()
     return true
   }
@@ -109,6 +118,19 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   override func preferredStatusBarStyle() -> UIStatusBarStyle {
     return UIStatusBarStyle.LightContent
   }
+  
+  // MARK: - Dismiss Keyboard
+  func handleSingleTap(recognizer: UITapGestureRecognizer) {
+    println("Ding Dong")
+    self.view.endEditing(true)
+  }
+  
+  //MARK: - UIGesture
+  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+    return userField.isFirstResponder() || passwordField.isFirstResponder()
+  }
+  
+  
   
   func configureUI() {
     

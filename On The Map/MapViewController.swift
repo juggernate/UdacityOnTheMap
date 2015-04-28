@@ -107,7 +107,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     pinView?.image = pinImage
     //TODO: align callout / or align image to callout?
-
     return pinView
   }
   
