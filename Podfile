@@ -4,4 +4,3 @@ use_frameworks!
 
 pod 'Alamofire', '~> 1.1'
 pod "SwiftyJSON", ">= 2.2"
-pod 'RealmSwift'
