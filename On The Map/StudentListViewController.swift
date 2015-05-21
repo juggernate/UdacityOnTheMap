@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import RealmSwift
 
 class StudentListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
   @IBOutlet weak var refreshButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
+  let realm = Realm()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -43,8 +45,6 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
       webVCNav.pushViewController(webVC, animated: false)
       self.presentViewController(webVCNav, animated: true, completion: nil)
     }
-    
-    
   }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -56,7 +56,7 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
     self.dismissViewControllerAnimated(true, completion: nil)
   }
   
-  @IBAction func updateStudenList() {
+  @IBAction func updateStudentList() {
     StudentsManager.sharedInstance.updateStudents{ error in
       if let error = error {
         //display error?
