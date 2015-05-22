@@ -28,6 +28,7 @@ class StudentsManager: NSObject {
   static let sharedInstance = StudentsManager()
 
   var students = [Student]()
+  var staleStudents: [Student]?
   
   //TODO: should do filtering here instead of view controllers...?
   //TODO: on tableView enable sort&reverse by date, proximity, alphabetical, and search?
@@ -39,8 +40,10 @@ class StudentsManager: NSObject {
     //If starting sorted by newest, can just add to list when it does NOT contain Student.uniqueKey (Udacity ID)
     var filteredStudents = [Student]()
     for student in allStudents {
+      println("\(student.objectID) -- \(student.uniqueKey)")
       //filter the bunch of these with different uniqueKeys from testing
       if student.firstName == "first" && student.lastName == "last" {
+        //filteredStudents.append(student)
         continue
       }
       //predicate closure to see if filtered array already has student record
@@ -50,6 +53,8 @@ class StudentsManager: NSObject {
     }
 
     //TODO: Add this to a separate filtered realm?
+    println("Number of Student Posts AFTER FILTER (ARRAY): \(filteredStudents.count)")
+
     return filteredStudents
     
   }
@@ -60,7 +65,7 @@ class StudentsManager: NSObject {
   
   //TODO: prefetch this on startup, call from AppDelegate or loginVC?
   func updateStudents(completionHandler:(errorString: String?)->Void) {
-    println("Number of Student Posts Before Update: \(Realm().objects(Student).count)")
+    println("Number of Student Posts BEFORE Update (REALM): \(Realm().objects(Student).count)")
     self.students = filterStudents()
     
     UdacityClient.sharedInstance.updateStudentsList { json, errorString in
@@ -73,13 +78,41 @@ class StudentsManager: NSObject {
         let realm = Realm()
         realm.write{
           for studentJSON in results {
-            let student = Student(json: studentJSON)
             //update requires primary key be defined
+            
+            let student = Student(json: studentJSON)
             realm.add(student, update: true)
           }
         }
       }
+      
+      println("Number of Student Posts AFTER Update (REALM): \(Realm().objects(Student).count)")
+      
+      let filtered = self.filterStudents()
+      var removers = [Student]()
+      for stud in Realm().objects(Student) {
+        if !contains(filtered, stud) {
+          removers.append(stud)
+        }
+      }
+      
+      println("Filtered Students \(filtered.count)")
+      for s in filtered{
+        println("To NOT Delete: \(s.objectID) -- \(s.uniqueKey)")
+      }
+      println("Students to remove \(removers.count)")
+      for s in removers{
+        println("To REMOVE: \(s.objectID) -- \(s.uniqueKey)")
+      }
+      
+      Realm().write {
+        Realm().delete(removers)
+      }
+      
+      println("Realm NOW HAS \(Realm().objects(Student)) students")
+
       completionHandler(errorString: nil)
     }
   }
+  
 }
