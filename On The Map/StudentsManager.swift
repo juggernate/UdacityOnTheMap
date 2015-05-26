@@ -40,10 +40,13 @@ class StudentsManager: NSObject {
     //If starting sorted by newest, can just add to list when it does NOT contain Student.uniqueKey (Udacity ID)
     var filteredStudents = [Student]()
     for student in allStudents {
-      println("\(student.objectID) -- \(student.uniqueKey)")
+//      println("\(student.objectID) -- \(student.uniqueKey)")
       //filter the bunch of these with different uniqueKeys from testing
       if student.firstName == "first" && student.lastName == "last" {
         //filteredStudents.append(student)
+        continue
+      }
+      if student.firstName == "" && student.lastName == "" {
         continue
       }
       //predicate closure to see if filtered array already has student record
@@ -97,19 +100,19 @@ class StudentsManager: NSObject {
       }
       
       println("Filtered Students \(filtered.count)")
-      for s in filtered{
-        println("To NOT Delete: \(s.objectID) -- \(s.uniqueKey)")
-      }
-      println("Students to remove \(removers.count)")
-      for s in removers{
-        println("To REMOVE: \(s.objectID) -- \(s.uniqueKey)")
-      }
+//      for s in filtered{
+//        println("To NOT Delete: \(s.objectID) -- \(s.uniqueKey)")
+//      }
+//      println("Students to remove \(removers.count)")
+//      for s in removers{
+//        println("To REMOVE: \(s.objectID) -- \(s.uniqueKey)")
+//      }
       
       Realm().write {
         Realm().delete(removers)
       }
       
-      println("Realm NOW HAS \(Realm().objects(Student)) students")
+      println("Realm NOW HAS \(Realm().objects(Student).count) students")
 
       completionHandler(errorString: nil)
     }

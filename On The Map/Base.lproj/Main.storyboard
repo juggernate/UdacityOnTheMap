@@ -36,11 +36,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Students: On the Map" id="lXI-VK-1uK">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="et4-Oz-aeo">
-                            <connections>
-                                <action selector="logout" destination="BYZ-38-t0r" id="pMj-lW-XCY"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="bBU-j9-0sf">
                             <connections>
                                 <action selector="updateStudentList" destination="BYZ-38-t0r" id="fVs-Bb-bZ9"/>
@@ -275,11 +270,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Students: In the List" id="kku-Om-Qkt">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="WPk-pE-3RH">
-                            <connections>
-                                <action selector="logout" destination="w3B-8k-J5L" id="p80-2F-Gw9"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="8HI-HT-vUo">
                             <connections>
                                 <action selector="updateStudentList" destination="w3B-8k-J5L" id="S3W-87-MtC"/>
