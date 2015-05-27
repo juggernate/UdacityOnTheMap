@@ -11,7 +11,7 @@ import Alamofire
 import SwiftyJSON
 
 class UdacityClient: NSObject {
-
+  //singleton in Swift 1.2
   static let sharedInstance = UdacityClient()
   
   var user = Student()

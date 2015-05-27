@@ -10,12 +10,14 @@
 
 import UIKit
 import MapKit
+import RealmSwift
 
 class MapViewController: UIViewController, MKMapViewDelegate {
   
   @IBOutlet weak var mapView: MKMapView!
   @IBOutlet weak var refreshButton: UIBarButtonItem!
   @IBOutlet weak var spinner: UIActivityIndicatorView!
+  let realm = Realm() // get default realm
   
   let pinImage = UIImage(named: "PinIcon")
   
@@ -24,30 +26,40 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     mapView.delegate = self
     
-    updateStudenList()
+//    makeAnnotations()
+//    updateStudentList()
     
   }
   
   override func viewWillAppear(animated: Bool) {
-    updateStudenList()
+    
+    updateStudentList()
   }
   
   @IBAction func logout() {
     self.dismissViewControllerAnimated(true, completion: nil)
   }
+  
+//  func mapViewDidFinishLoadingMap(mapView: MKMapView!) {
+//    makeAnnotations()
+//  }
+  
+  func mapViewDidFinishRenderingMap(mapView: MKMapView!, fullyRendered: Bool) {
+    makeAnnotations()
+  }
 
   
-  @IBAction func updateStudenList() {
+  @IBAction func updateStudentList() {
 //    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
 //    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+    //TODO: IF realm already has students, just show that...use update to update realm
     refreshButton.enabled = false
     spinner.startAnimating()
     StudentsManager.sharedInstance.updateStudents(){ error in
       self.spinner.stopAnimating()
       self.refreshButton.enabled = true
       if let error = error {
-        //display error
-        self.displayError(error)
+//        self.displayError(error)
         return
       }
       self.makeAnnotations()
@@ -59,7 +71,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     var annotations = [MKPointAnnotation]()
     
-    for student in StudentsManager.sharedInstance.students {
+    //Get the realm students results instead...
+    //With reactive turn this to push instead?
+    let studentPosts = realm.objects(Student)
+    //Where should this get filtered? This has many dups from students testing, how to filter to just show their latest
+    
+    for student in studentPosts {
+//    for student in StudentsManager.sharedInstance.students {
       
       let lat = CLLocationDegrees(student.latitude)
       let long = CLLocationDegrees(student.longitude)
