@@ -27,12 +27,9 @@ class StudentsManager: NSObject {
   //singleton in Swift 1.2 with static let
   static let sharedInstance = StudentsManager()
 
-  var students = [Student]()
-  var staleStudents: [Student]?
-  
-  //TODO: should do filtering here instead of view controllers...?
+//  var students = [Student]()
+
   //TODO: on tableView enable sort&reverse by date, proximity, alphabetical, and search?
-  // IS THIS BAD as a calculated property? I'm not sure this should get rebuilt each time it's accessed
   func filterStudents() -> [Student] {
     let realm = Realm()
 
@@ -69,7 +66,7 @@ class StudentsManager: NSObject {
   //TODO: prefetch this on startup, call from AppDelegate or loginVC?
   func updateStudents(completionHandler:(errorString: String?)->Void) {
     println("Number of Student Posts BEFORE Update (REALM): \(Realm().objects(Student).count)")
-    self.students = filterStudents()
+//    self.students = filterStudents()
     
     UdacityClient.sharedInstance.updateStudentsList { json, errorString in
       if let error = errorString {
@@ -89,30 +86,21 @@ class StudentsManager: NSObject {
         }
       }
       
-      println("Number of Student Posts AFTER Update (REALM): \(Realm().objects(Student).count)")
+//      println("Number of Student Posts AFTER Update (REALM): \(Realm().objects(Student).count)")
       
       let filtered = self.filterStudents()
       var removers = [Student]()
-      for stud in Realm().objects(Student) {
-        if !contains(filtered, stud) {
-          removers.append(stud)
+      for student in Realm().objects(Student) {
+        if !contains(filtered, student) {
+          removers.append(student)
         }
       }
-      
-      println("Filtered Students \(filtered.count)")
-//      for s in filtered{
-//        println("To NOT Delete: \(s.objectID) -- \(s.uniqueKey)")
-//      }
-//      println("Students to remove \(removers.count)")
-//      for s in removers{
-//        println("To REMOVE: \(s.objectID) -- \(s.uniqueKey)")
-//      }
       
       Realm().write {
         Realm().delete(removers)
       }
       
-      println("Realm NOW HAS \(Realm().objects(Student).count) students")
+//      println("Realm NOW HAS \(Realm().objects(Student).count) students")
 
       completionHandler(errorString: nil)
     }
