@@ -14,6 +14,8 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
   @IBOutlet weak var refreshButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
   let realm = Realm()
+
+  var students = Realm().objects(Student)
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -26,7 +28,7 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
     let cell = tableView.dequeueReusableCellWithIdentifier("StudentCell") as! UITableViewCell
     
 //    let student = StudentsManager.sharedInstance.students[indexPath.row]
-    let student = realm.objects(Student)[indexPath.row]
+    let student = students[indexPath.row]
     cell.textLabel?.text = "\(student.firstName) \(student.lastName)"
     cell.detailTextLabel?.text = student.mediaURL
     
@@ -38,7 +40,7 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     
 //    let student = StudentsManager.sharedInstance.students[indexPath.row]
-    let student = realm.objects(Student)[indexPath.row]
+    let student = students[indexPath.row]
     if let url = NSURL(string: student.mediaURL) {
       let request = NSURLRequest(URL: url)
       let webVC = self.storyboard!.instantiateViewControllerWithIdentifier("WebViewController") as! WebViewController
@@ -67,6 +69,11 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
         //display error?
         return
       }
+//      self.students.removeAll(keepCapacity: true)
+//      for s in Realm().objects(Student).sorted("updatedAt", ascending: false){
+//        self.students.append(s)
+//      }
+      self.students = Realm().objects(Student).sorted("updatedAt", ascending: false)
       self.tableView.reloadData()
     }
   }
