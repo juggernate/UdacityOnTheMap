@@ -27,9 +27,6 @@ class StudentsManager: NSObject {
   //singleton in Swift 1.2 with static let
   static let sharedInstance = StudentsManager()
 
-//  var students = [Student]()
-
-  //TODO: on tableView enable sort&reverse by date, proximity, alphabetical, and search?
   func filterStudents() -> [Student] {
     let realm = Realm()
 
@@ -37,23 +34,19 @@ class StudentsManager: NSObject {
     //If starting sorted by newest, can just add to list when it does NOT contain Student.uniqueKey (Udacity ID)
     var filteredStudents = [Student]()
     for student in allStudents {
-//      println("\(student.objectID) -- \(student.uniqueKey)")
       //filter the bunch of these with different uniqueKeys from testing
+      //TODO: cleaner filtering checks for incomplete entries?
       if student.firstName == "first" && student.lastName == "last" {
-        //filteredStudents.append(student)
         continue
       }
       if student.firstName == "" && student.lastName == "" {
         continue
       }
-      //predicate closure to see if filtered array already has student record
+      //predicate closure to check if filtered array does not yet contain record with this key
       if !contains(filteredStudents, {$0.uniqueKey == student.uniqueKey}) {
         filteredStudents.append(student)
       }
     }
-
-    //TODO: Add this to a separate filtered realm?
-    println("Number of Student Posts AFTER FILTER (ARRAY): \(filteredStudents.count)")
 
     return filteredStudents
     
@@ -63,11 +56,11 @@ class StudentsManager: NSObject {
     return Realm().objects(Student).sorted("updatedAt", ascending: false).first?.updatedAt
   }
   
-  //TODO: prefetch this on startup, call from AppDelegate or loginVC?
+  //TODO: prefetch, call this on startup, call from AppDelegate or loginVC?
+  //TODO: when called automatically (or manually?) this should only update after timeout threshold
+  // i.e. this gets called when moving back to mapView, but should not get called every time if it was called in last X minutes
   func updateStudents(completionHandler:(errorString: String?)->Void) {
-    println("Number of Student Posts BEFORE Update (REALM): \(Realm().objects(Student).count)")
-//    self.students = filterStudents()
-    
+
     UdacityClient.sharedInstance.updateStudentsList { json, errorString in
       if let error = errorString {
         completionHandler(errorString: error)
@@ -78,16 +71,11 @@ class StudentsManager: NSObject {
         let realm = Realm()
         realm.write{
           for studentJSON in results {
-            //update requires primary key be defined
-            
-            let student = Student(json: studentJSON)
-            realm.add(student, update: true)
+            realm.add(Student(json: studentJSON), update: true)
           }
         }
       }
-      
-//      println("Number of Student Posts AFTER Update (REALM): \(Realm().objects(Student).count)")
-      
+
       let filtered = self.filterStudents()
       var removers = [Student]()
       for student in Realm().objects(Student) {
@@ -99,8 +87,6 @@ class StudentsManager: NSObject {
       Realm().write {
         Realm().delete(removers)
       }
-      
-//      println("Realm NOW HAS \(Realm().objects(Student).count) students")
 
       completionHandler(errorString: nil)
     }

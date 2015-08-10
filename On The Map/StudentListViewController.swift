@@ -69,10 +69,6 @@ class StudentListViewController: UIViewController, UITableViewDelegate, UITableV
         //display error?
         return
       }
-//      self.students.removeAll(keepCapacity: true)
-//      for s in Realm().objects(Student).sorted("updatedAt", ascending: false){
-//        self.students.append(s)
-//      }
       self.students = Realm().objects(Student).sorted("updatedAt", ascending: false)
       self.tableView.reloadData()
     }
