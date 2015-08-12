@@ -44,7 +44,7 @@ extension UdacityClient {
         return
       }
 
-      if let data = DATA as? NSData {
+      if let data = DATA {
         let json = JSON(data: self.stripUdacityData(data))
 
         if var responseError = json["error"].string {
@@ -77,7 +77,7 @@ extension UdacityClient {
         return
       }
 
-      if let data = DATA as? NSData {
+      if let data = DATA {
         let json = JSON(data: self.stripUdacityData(data))
 
         if let responseError = json["error"].string {

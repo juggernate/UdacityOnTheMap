@@ -62,7 +62,7 @@ extension UdacityClient {
         mrequest.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
         mrequest.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         
-        var request = NSURLRequest()
+        var request = NSMutableURLRequest()
         //manually encode parameters?
         let encoding = Alamofire.ParameterEncoding.URL
         (request, _) = encoding.encode(mrequest, parameters: params)
