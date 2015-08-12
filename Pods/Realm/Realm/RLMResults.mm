@@ -31,6 +31,8 @@
 #import <objc/runtime.h>
 #import <realm/table_view.hpp>
 
+using namespace realm;
+
 //
 // RLMResults implementation
 //
@@ -38,7 +40,7 @@
     std::unique_ptr<realm::Query> _backingQuery;
     realm::TableView _backingView;
     BOOL _viewCreated;
-    RowIndexes::Sorter _sortOrder;
+    RLMSortOrder _sortOrder;
 
 @protected
     RLMRealm *_realm;
@@ -53,18 +55,18 @@
 + (instancetype)resultsWithObjectClassName:(NSString *)objectClassName
                                      query:(std::unique_ptr<realm::Query>)query
                                      realm:(RLMRealm *)realm {
-    return [self resultsWithObjectClassName:objectClassName query:move(query) sort:RowIndexes::Sorter{} realm:realm];
+    return [self resultsWithObjectClassName:objectClassName query:move(query) sort:{} realm:realm];
 }
 
 + (instancetype)resultsWithObjectClassName:(NSString *)objectClassName
                                      query:(std::unique_ptr<realm::Query>)query
-                                      sort:(RowIndexes::Sorter const&)sorter
+                                      sort:(RLMSortOrder)sorter
                                      realm:(RLMRealm *)realm {
     RLMResults *ar = [[self alloc] initPrivate];
     ar->_objectClassName = objectClassName;
     ar->_viewCreated = NO;
     ar->_backingQuery = move(query);
-    ar->_sortOrder = sorter;
+    ar->_sortOrder = std::move(sorter);
     ar->_realm = realm;
     ar->_objectSchema = realm.schema[objectClassName];
     return ar;
@@ -99,8 +101,8 @@ static inline void RLMResultsValidateAttached(__unsafe_unretained RLMResults *co
         // create backing view if needed
         ar->_backingView = ar->_backingQuery->find_all();
         ar->_viewCreated = YES;
-        if (!ar->_sortOrder.m_columns.empty()) {
-            ar->_backingView.sort(ar->_sortOrder.m_column_indexes, ar->_sortOrder.m_ascending);
+        if (ar->_sortOrder) {
+            ar->_backingView.sort(ar->_sortOrder.columnIndices, ar->_sortOrder.ascending);
         }
     }
     // otherwise we're backed by a table and don't need to update anything
@@ -235,19 +237,18 @@ static inline void RLMResultsValidateInWriteTransaction(__unsafe_unretained RLMR
     if (object.invalidated) {
         @throw RLMException(@"RLMObject is no longer valid");
     }
-
-    // check that object types align
-    if (object->_row.get_table() != &_backingView.get_parent()) {
-        @throw RLMException(@"Object type does not match RLMResults");
-    }
-
-    size_t object_ndx = object->_row.get_index();
-    size_t result = _backingView.find_by_source_ndx(object_ndx);
-    if (result == realm::not_found) {
+    if (!object->_row) {
         return NSNotFound;
     }
 
-    return result;
+    // check that object types align
+    if (object->_row.get_table() != &_backingView.get_parent()) {
+        NSString *message = [NSString stringWithFormat:@"Object type '%@' does not match RLMResults type '%@'.", object->_objectSchema.className, _objectClassName];
+        @throw RLMException(message);
+    }
+
+    size_t object_ndx = object->_row.get_index();
+    return RLMConvertNotFound(_backingView.find_by_source_ndx(object_ndx));
 }
 
 - (id)valueForKey:(NSString *)key {
@@ -278,14 +279,14 @@ static inline void RLMResultsValidateInWriteTransaction(__unsafe_unretained RLMR
 }
 
 - (RLMResults *)objectsWithPredicate:(NSPredicate *)predicate {
-    RLMResultsValidate(self);
+    RLMCheckThread(_realm);
 
     // copy array and apply new predicate creating a new query and view
     auto query = [self cloneQuery];
     RLMUpdateQueryWithPredicate(query.get(), predicate, _realm.schema, _realm.schema[self.objectClassName]);
     return [RLMResults resultsWithObjectClassName:self.objectClassName
                                             query:move(query)
-                                             sort:_backingView.m_sorting_predicate
+                                             sort:_sortOrder
                                             realm:_realm];
 }
 
@@ -294,15 +295,13 @@ static inline void RLMResultsValidateInWriteTransaction(__unsafe_unretained RLMR
 }
 
 - (RLMResults *)sortedResultsUsingDescriptors:(NSArray *)properties {
-    RLMResultsValidate(self);
+    RLMCheckThread(_realm);
 
     auto query = [self cloneQuery];
-    RLMResults *r = [RLMResults resultsWithObjectClassName:self.objectClassName query:move(query) realm:_realm];
-
-    // attach new table view
-    RLMResultsValidateAttached(r);
-    RLMUpdateViewWithOrder(r->_backingView, _realm.schema[self.objectClassName], properties);
-    return r;
+    return [RLMResults resultsWithObjectClassName:self.objectClassName
+                                            query:move(query)
+                                             sort:RLMSortOrderFromDescriptors(_objectSchema, properties)
+                                            realm:_realm];
 }
 
 - (id)objectAtIndexedSubscript:(NSUInteger)index {
@@ -516,10 +515,14 @@ static NSNumber *averageOfProperty(TableType const& table, RLMRealm *realm, NSSt
     if (object.invalidated) {
         @throw RLMException(@"RLMObject is no longer valid");
     }
+    if (!object->_row) {
+        return NSNotFound;
+    }
 
     // check that object types align
     if (object->_row.get_table() != _table) {
-        @throw RLMException(@"Object type does not match RLMResults");
+        NSString *message = [NSString stringWithFormat:@"Object type '%@' does not match RLMResults type '%@'.", object->_objectSchema.className, _objectClassName];
+        @throw RLMException(message);
     }
 
     return RLMConvertNotFound(object->_row.get_index());

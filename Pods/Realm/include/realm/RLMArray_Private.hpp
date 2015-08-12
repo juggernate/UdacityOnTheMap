@@ -20,6 +20,7 @@
 #import <Realm/RLMResults.h>
 
 #import <memory>
+#import <vector>
 
 namespace realm {
     class LinkView;
@@ -34,6 +35,15 @@ namespace realm {
 
 @class RLMObjectSchema;
 
+struct RLMSortOrder {
+    std::vector<size_t> columnIndices;
+    std::vector<bool> ascending;
+
+    explicit operator bool() const {
+        return !columnIndices.empty();
+    }
+};
+
 // RLMArray private properties/ivars for all subclasses
 @interface RLMArray () {
   @protected
@@ -44,10 +54,6 @@ namespace realm {
 
 // initializer
 - (instancetype)initWithObjectClassName:(NSString *)objectClassName standalone:(BOOL)standalone;
-
-// deletes all objects in the RLMArray from their containing realms
-- (void)deleteObjectsFromRealm;
-
 @end
 
 
@@ -58,6 +64,9 @@ namespace realm {
 + (instancetype)arrayWithObjectClassName:(NSString *)objectClassName
                                     view:(realm::LinkViewRef)view
                                    realm:(RLMRealm *)realm;
+
+// deletes all objects in the RLMArray from their containing realms
+- (void)deleteObjectsFromRealm;
 @end
 
 
@@ -73,6 +82,12 @@ namespace realm {
                                      query:(std::unique_ptr<realm::Query>)query
                                       view:(realm::TableView &&)view
                                      realm:(RLMRealm *)realm;
+
++ (instancetype)resultsWithObjectClassName:(NSString *)objectClassName
+                                     query:(std::unique_ptr<realm::Query>)query
+                                      sort:(RLMSortOrder)sorter
+                                     realm:(RLMRealm *)realm;
+
 - (void)deleteObjectsFromRealm;
 @end
 

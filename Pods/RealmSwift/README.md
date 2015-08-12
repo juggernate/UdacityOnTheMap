@@ -12,7 +12,7 @@ This repository holds the source code for the iOS & OSX versions of Realm, for b
 
 ## Getting Started
 
-Please see the detailed instructions in our docs to add [Realm Objective-C](https://realm.io/docs/objc/#installation) _or_ [Realm Swift](https://realm.io/docs/swift/#installation) to your Xcode project.
+Please see the detailed instructions in our docs to add [Realm Objective-C](https://realm.io/docs/objc/latest/#installation) _or_ [Realm Swift](https://realm.io/docs/swift/latest/#installation) to your Xcode project.
 
 ## Documentation
 
@@ -40,7 +40,7 @@ In case you don't want to use the precompiled version, you can build Realm yours
 
 Prerequisites:
 
-* Building Realm requires Xcode 6.
+* Building Realm requires Xcode 6.3, 6.4, or 7.0 beta 4.
 * Building Realm documentation requires [appledoc](https://github.com/tomaz/appledoc)
 
 Once you have all the necessary prerequisites, building Realm.framework just takes a single command: `sh build.sh build`. You'll need an internet connection the first time you build Realm to download the core binary.

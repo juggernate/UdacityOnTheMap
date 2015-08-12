@@ -18,7 +18,7 @@
 
 #import "RLMQueryUtil.hpp"
 
-#import "RLMArray.h"
+#import "RLMArray_Private.hpp"
 #import "RLMObject_Private.hpp"
 #import "RLMObjectSchema_Private.hpp"
 #import "RLMProperty_Private.h"
@@ -678,8 +678,6 @@ void update_query_with_column_expression(RLMObjectSchema *scheme, Query &query,
             query.and_query(column_expression<Double>(type, leftIndex, rightIndex, table));
             break;
         case type_DateTime:
-            // FIXME: int64_t should be DateTime but that doesn't work on 32 bit
-            // FIXME: as time_t(32bit) != time_t(64bit)
             query.and_query(column_expression<int64_t>(type, leftIndex, rightIndex, table));
             break;
         case type_String: {
@@ -858,21 +856,15 @@ void RLMUpdateQueryWithPredicate(realm::Query *query, NSPredicate *predicate, RL
                     (int)validateMessage.size(), validateMessage.c_str());
 }
 
-void RLMGetColumnIndices(RLMObjectSchema *schema, NSArray *properties,
-                         std::vector<size_t> &columns, std::vector<bool> &order) {
-    columns.reserve(properties.count);
-    order.reserve(properties.count);
+RLMSortOrder RLMSortOrderFromDescriptors(RLMObjectSchema *objectSchema, NSArray *descriptors) {
+    RLMSortOrder sort;
+    sort.columnIndices.reserve(descriptors.count);
+    sort.ascending.reserve(descriptors.count);
 
-    for (RLMSortDescriptor *descriptor in properties) {
-        columns.push_back(RLMValidatedPropertyForSort(schema, descriptor.property).column);
-        order.push_back(descriptor.ascending);
+    for (RLMSortDescriptor *descriptor in descriptors) {
+        sort.columnIndices.push_back(RLMValidatedPropertyForSort(objectSchema, descriptor.property).column);
+        sort.ascending.push_back(descriptor.ascending);
     }
-}
 
-void RLMUpdateViewWithOrder(realm::TableView &view, RLMObjectSchema *schema, NSArray *properties)
-{
-    std::vector<size_t> columns;
-    std::vector<bool> order;
-    RLMGetColumnIndices(schema, properties, columns, order);
-    view.sort(move(columns), move(order));
+    return sort;
 }

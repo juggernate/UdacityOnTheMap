@@ -46,24 +46,6 @@ typedef NS_ENUM(char, RLMAccessorCode) {
     RLMAccessorCodeAny,
 };
 
-// verify attached
-static inline void RLMVerifyAttached(__unsafe_unretained RLMObjectBase *const obj) {
-    if (!obj->_row.is_attached()) {
-        @throw RLMException(@"Object has been deleted or invalidated.");
-    }
-    RLMCheckThread(obj->_realm);
-}
-
-// verify writable
-static inline void RLMVerifyInWriteTransaction(__unsafe_unretained RLMObjectBase *const obj) {
-    // first verify is attached
-    RLMVerifyAttached(obj);
-
-    if (!obj->_realm->_inWriteTransaction) {
-        @throw RLMException(@"Attempting to modify object outside of a write transaction - call beginWriteTransaction on an RLMRealm instance first.");
-    }
-}
-
 // long getter/setter
 static inline long long RLMGetLong(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex) {
     RLMVerifyAttached(obj);
@@ -158,7 +140,7 @@ static inline NSDate *RLMGetDate(__unsafe_unretained RLMObjectBase *const obj, N
 }
 static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex, __unsafe_unretained NSDate *const date) {
     RLMVerifyInWriteTransaction(obj);
-    std::time_t time = date.timeIntervalSince1970;
+    int64_t time = date.timeIntervalSince1970;
     obj->_row.set_datetime(colIndex, realm::DateTime(time));
 }
 
@@ -166,7 +148,7 @@ static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSU
 static inline NSData *RLMGetData(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex) {
     RLMVerifyAttached(obj);
     realm::BinaryData data = obj->_row.get_binary(colIndex);
-    return [NSData dataWithBytes:data.data() length:data.size()];
+    return RLMBinaryDataToNSData(data);
 }
 static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex, __unsafe_unretained NSData *const data) {
     RLMVerifyInWriteTransaction(obj);
@@ -290,8 +272,7 @@ static inline id RLMGetAnyProperty(__unsafe_unretained RLMObjectBase *const obj,
             return [NSDate dateWithTimeIntervalSince1970:mixed.get_datetime().get_datetime()];
         case RLMPropertyTypeData: {
             realm::BinaryData bd = mixed.get_binary();
-            NSData *d = [NSData dataWithBytes:bd.data() length:bd.size()];
-            return d;
+            return RLMBinaryDataToNSData(bd);
         }
         case RLMPropertyTypeArray:
             @throw [NSException exceptionWithName:@"RLMNotImplementedException"
@@ -317,7 +298,7 @@ static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSU
         return;
     }
     if (NSDate *date = RLMDynamicCast<NSDate>(val)) {
-        obj->_row.set_mixed(col_ndx, realm::DateTime(time_t([date timeIntervalSince1970])));
+        obj->_row.set_mixed(col_ndx, realm::DateTime(int64_t([date timeIntervalSince1970])));
         return;
     }
     if (NSData *data = RLMDynamicCast<NSData>(val)) {
@@ -485,9 +466,7 @@ static IMP RLMAccessorStandaloneSetter(RLMProperty *prop, RLMAccessorCode access
         return imp_implementationWithBlock(^(RLMObjectBase *obj, id<NSFastEnumeration> ar) {
             // make copy when setting (as is the case for all other variants)
             RLMArray *standaloneAr = [[RLMArray alloc] initWithObjectClassName:objectClassName standalone:YES];
-            if ((id)ar != NSNull.null) {
-                [standaloneAr addObjects:ar];
-            }
+            [standaloneAr addObjects:ar];
             RLMSuperSet(obj, propName, standaloneAr);
         });
     }
@@ -645,16 +624,12 @@ void RLMDynamicValidatedSet(RLMObjectBase *obj, NSString *propName, id val) {
     RLMObjectSchema *schema = obj->_objectSchema;
     RLMProperty *prop = schema[propName];
     if (!prop) {
-        @throw RLMException(@"Invalid property name",
-                            @{@"Property name:" : propName ?: @"nil",
-                              @"Class name": obj->_objectSchema.className});
+        @throw RLMException([NSString stringWithFormat:@"Invalid property name `%@` for class `%@`.", propName, obj->_objectSchema.className]);
     }
     if (!RLMIsObjectValidForProperty(val, prop)) {
-        @throw RLMException(@"Invalid property name",
-                            @{@"Property name:" : propName ?: @"nil",
-                              @"Value": val ? [val description] : @"nil"});
+        @throw RLMException([NSString stringWithFormat:@"Invalid property value `%@` for property `%@` of class `%@`", val, propName, obj->_objectSchema.className]);
     }
-    RLMDynamicSet(obj, prop, val, RLMCreationOptionsPromoteStandalone);
+    RLMDynamicSet(obj, prop, RLMNSNullToNil(val), RLMCreationOptionsPromoteStandalone);
 }
 
 void RLMDynamicSet(__unsafe_unretained RLMObjectBase *const obj, __unsafe_unretained RLMProperty *const prop,
@@ -727,9 +702,7 @@ void RLMDynamicSet(__unsafe_unretained RLMObjectBase *const obj, __unsafe_unreta
 id RLMDynamicGet(__unsafe_unretained RLMObjectBase *obj, __unsafe_unretained NSString *propName) {
     RLMProperty *prop = obj->_objectSchema[propName];
     if (!prop) {
-        @throw RLMException(@"Invalid property name",
-                            @{@"Property name:" : propName ?: @"nil",
-                              @"Class name": obj->_objectSchema.className});
+        @throw RLMException([NSString stringWithFormat:@"Invalid property name `%@` for class `%@`.", propName, obj->_objectSchema.className]);
     }
     NSUInteger col = prop.column;
     switch (accessorCodeForType(prop.objcType, prop.type)) {
